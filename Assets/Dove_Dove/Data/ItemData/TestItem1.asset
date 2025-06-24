@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13ce494fe5d37304c9b30b94309bf787, type: 3}
+  m_Name: TestItem1
+  m_EditorClassIdentifier: 
+  itemName: test4
+  itemImg: {fileID: 21300000, guid: dc9f1e37e5b51e34ebfb77b910c09848, type: 3}
+  itemPrice: 456
+  itemText: qweqwghdfhhdgkdsfh
+  effects:
+  - effectType: 16
+    value: 1
