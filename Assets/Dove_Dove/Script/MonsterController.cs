@@ -31,6 +31,9 @@ public class MonsterController : MonoBehaviour
 
     public float attackDistance;
 
+    private float theTime;
+    public float deadTime = 2.0f;
+
     private float distance;
 
     [SerializeField] 
@@ -78,6 +81,12 @@ public class MonsterController : MonoBehaviour
             case monsterState.attack:
                 Attack();
                 break;
+            case monsterState.hit:
+                monsterHit();
+                break;
+            case monsterState.dead:
+                Dead();
+                break;
         }
     }
 
@@ -88,10 +97,8 @@ public class MonsterController : MonoBehaviour
     }
     void Move()
     {
-        if(state == monsterState.attack)
+        if(state == monsterState.attack || state == monsterState.hit || state == monsterState.dead)
             return;
-
-
 
         animator.SetBool("Walk", true);
         float distance = Vector2.Distance(transform.position, target);
@@ -126,9 +133,32 @@ public class MonsterController : MonoBehaviour
         state = monsterState.idle;
     }
 
+    void monsterHit()
+    {
+        theTime += Time.deltaTime;
+        if(theTime > 0.4f)
+        {
+            state = monsterState.idle;
+            theTime = 0;
+        }
+    
+    }
+
+    void Dead()
+    {
+        theTime += Time.deltaTime;
+        GetComponent<Rigidbody2D>().simulated = false;
+        if (theTime > deadTime)
+        {
+            Destroy(gameObject);
+        }
+    }
+
 
     void RayOn()
     {
+        if (state == monsterState.hit || state == monsterState.dead)
+            return;
         // 몬스터가 바라보는 방향 계산 (Sprite 방향에 따라 flipX 판단)
         Vector2 direction = GetComponent<SpriteRenderer>().flipX ? Vector2.left : Vector2.right;
 
@@ -175,9 +205,5 @@ public class MonsterController : MonoBehaviour
 
     }
 
-    void Dead()
-    {
-
-    }
 
 }

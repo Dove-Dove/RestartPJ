@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class PlayerMove : MonoBehaviour
     {
         idle,
         move,
+        jump,
         attack,
+        roll,
         hit,
         dead
     }
@@ -17,24 +20,41 @@ public class PlayerMove : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 8f;
     public float maxHp = 100;
-    private float nowHp ;
+
+    private PlayerState playerState = PlayerState.idle;
     
-    private Animator animator;
+    private float nowHp;
 
     private bool jumping = false;
 
+    private bool attacking = false;
+    private int attackNum = 1;
+
+    private Animator animator;
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
 
     private Vector2 movePos = Vector2.zero;
 
-    private bool attack = false;
+    [SerializeField] 
+    private float attackDeley = 0.4f;
 
-    [SerializeField] private float attackDeley = 0.4f;
+    //-- 구르기 
+    [SerializeField] 
+    float rollSpeed = 5f;
+    [SerializeField] 
+    float rollDuration = 0.5f;
 
-    private bool attackCombo = false;
+    private bool rolling = false;
+    private float rollTimer = 0f;
+    private Vector2 rollDirection;
+    //-------히트 
 
+    private float hitTime = 0f;
 
-    private bool attacking = false;
+    private float hitAnimeEndTime = 1.5f;
+
+    //---------
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector2 boxSize = new Vector2(0.5f, 0.1f);
@@ -51,7 +71,9 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator= GetComponent<Animator>();
         nowHp = maxHp;
-        //attackCollider.enabled = false;
+        sr = GetComponent<SpriteRenderer>();
+
+        attackCollider.enabled = false;
     }
 
     void Update()
@@ -59,131 +81,217 @@ public class PlayerMove : MonoBehaviour
         //isGrounded = Physics2D.Raycast(groundCheck.position, Vector2.down, groundDistance, groundMask);
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
 
-        Attack();
-
-        float move = Input.GetAxisRaw("Horizontal");
-
-
-        if (jumping && !isGrounded)
+        if (isGrounded)
         {
-            animator.SetBool("IsGround", false);
-            animator.SetBool("Move", false);
-        }
-        else if (jumping && isGrounded)
-        {
+            animator.SetBool("IsGround", true);
             jumping = false;
-            animator.SetBool("IsGround", true);// ← 착지 시 점프 상태 해제
-            Debug.Log("지면에서 떨어짐!");
-        }
-
-        if (Input.GetAxisRaw("Horizontal") < 0 && isGrounded && !jumping)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-            animator.SetBool("Move", true);
-        }
-        else if (Input.GetAxisRaw("Horizontal") > 0 && isGrounded && !jumping)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-            animator.SetBool("Move", true);
-        }
-        else if (Input.GetAxisRaw("Horizontal") < 0 && !isGrounded)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else if (Input.GetAxisRaw("Horizontal") > 0 && !isGrounded)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
+            rb.drag = 5f;
         }
         else
+            rb.drag = 0f;
+
+        KeyController();
+
+        switch (playerState)
         {
-            animator.SetBool("Move", false);
+            case PlayerState.idle:
+                PlayerIdle();
+                break;
+            case PlayerState.move:
+                PlayerMoveing();
+                break;
+            case PlayerState.attack:
+                Attack();
+                break;
+            case PlayerState.jump:
+                Jumping();
+                break;
+            case PlayerState.roll:
+                PlayerRoll();
+                break;
+            case PlayerState.hit:
+                PlayerHit();
+                break;
         }
-        movePos = new Vector2(move * moveSpeed, rb.velocity.y);
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !jumping)
-        {
-            movePos = new Vector2(rb.velocity.x, jumpForce);
-            animator.SetBool("Move", false);
-            animator.SetTrigger("Jump");
-      
-        }
 
 
-         rb.velocity = movePos;
     }
 
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //if (collision.gameObject.CompareTag("Ground"))
-        //{
-        //    isGrounded = true;
-        //    jumping = false;
-        //    animator.SetBool("IsGround", true);// ← 착지 시 점프 상태 해제
-        //    Debug.Log("지면에서 떨어짐!");
-        //}
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        //if (collision.gameObject.CompareTag("Ground"))
-        //{
-        //    isGrounded = false;
-        //    animator.SetBool("IsGround", false);
-        //}
-    }
     private void Attack()
     {
-        Vector2 offset = GetComponent<SpriteRenderer>().flipX ? leftOffset : rightOffset;
+        Vector2 offset = sr.flipX ? leftOffset : rightOffset;
         attackCollider.offset = offset;
 
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (!attacking)
         {
-            attack = true;
+            //animator.ResetTrigger("Attack"); // 중복 방지
+            if(attackNum == 1)
+                animator.SetTrigger("Attack1");
+            else if(attackNum == 2)
+                animator.SetTrigger("Attack2");
+            attacking = true;
+        }
+    }
 
-            if (attackCombo)
-                animator.SetTrigger("NextAttack");
-            else
-                animator.SetTrigger("Attack");
+
+    private void KeyController()
+    {
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !attacking && 
+            playerState != PlayerState.jump && !jumping && !rolling)
+        {
+            playerState = PlayerState.attack;
+        }
+
+        else if(Input.GetKeyDown(KeyCode.LeftShift) && !attacking && 
+            playerState != PlayerState.jump && !jumping && !rolling)
+        {
+            playerState = PlayerState.roll;
+            PlayerRollStart();
+        }
+
+        else if (Input.GetKeyDown(KeyCode.Space) && isGrounded && 
+            playerState != PlayerState.jump && !rolling)
+        {
+            playerState = PlayerState.jump;
+            PlayerJump();
+        }
+
+
+
+    }
+    //-----------Idle-------------
+    private void PlayerIdle()
+    {
+        float move = Input.GetAxisRaw("Horizontal");
+        //animator.ResetTrigger("Attack");
+        if (move != 0)
+        {
+            playerState = PlayerState.move;
+        }
+
+        animator.SetBool("Move", false);
+
+    }
+
+    //------------Move-------------
+    private void PlayerMoveing()
+    {
+        float move = Input.GetAxisRaw("Horizontal");
+
+        if (move == 0)
+        {
+            playerState = PlayerState.idle;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            return;
+        }
+
+        sr.flipX = move < 0;
+
+        animator.SetBool("Move", true);
+
+        movePos = new Vector2(move * moveSpeed, rb.velocity.y);
+        rb.velocity = movePos;
+    }
+
+    //------------Jump-------------
+    private void PlayerJump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        animator.SetTrigger("Jump");
+        animator.SetBool("Move", false);
+        jumping = true;
+    }
+
+    private void Jumping()
+    {
+        if (isGrounded && jumping)
+        {
+            jumping = false;
+            playerState = PlayerState.idle;
+            animator.SetBool("IsGround", true);
+            return;
+        }
+
+        animator.SetBool("Move", false);
+        animator.SetBool("IsGround", false);
+    }
+    //------------Roll-------------
+
+    private void PlayerRollStart()
+    {
+        animator.SetTrigger("Roll");
+        animator.SetBool("Move", false);
+        rollDirection = sr.flipX ? Vector2.left : Vector2.right;
+        rollTimer = 0f;
+        rolling = true;
+    }
+
+    private void PlayerRoll()
+    {
+        if(rolling)
+        {
+            rb.velocity = rollDirection * rollSpeed;
+            rollTimer += Time.deltaTime;
+            if (rollTimer >= rollDuration)
+            {
+                rb.velocity = Vector2.zero;
+                rolling = false;
+                playerState = PlayerState.idle;
+            }
         }
 
     }
+    //----------------Hit-----------------
+    
+    private void PlayerHit()
+    {
+        hitTime += Time.deltaTime;
+        
+        if( hitTime >= hitAnimeEndTime)
+        {
+            playerState = PlayerState.idle;
+        }
+        else
+            animator.SetTrigger("Hit");
+    }
+
+    //--------애니메이션 특정한 부분에서 작동------------
 
     public void Hit(float Damages)
     {
         nowHp -= Damages;
+        animator.SetTrigger("Hit");
+        playerState = PlayerState.hit;
     }
 
-    public void ComboEnable()
-    {
-        attackCombo = true;
-    }
-
-    public void ComboDisable()
-    {
-        attackCombo = false;
-    }
 
     public void AttackEnd()
     {
-       animator.SetTrigger("Idle");
-       attack = false;
-       attackCollider.enabled = false;
+        attacking = false;
+        attackCollider.enabled = false;
+        playerState = PlayerState.idle;
 
+        attackNum++;
+        if (attackNum == 3)
+            attackNum = 1;
     }
     
     public void AttackBoxOn()
     {
-        attack = true;
         attackCollider.enabled = true;
     }
+
 
     public void JumpUp()
     {
         jumping = true;
+        animator.SetBool("IsGround", false);
+        animator.SetBool("Move", false);
     }
 
+    //--------------------------------------
 
     private void OnDrawGizmos()
     {
