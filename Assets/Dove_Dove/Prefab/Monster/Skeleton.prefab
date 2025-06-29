@@ -205,8 +205,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   attackCollider: {fileID: 945677917399950310}
-  rightOffset: {x: 0, y: 0}
-  leftOffset: {x: -0.6, y: 0}
+  rightOffset: {x: -0.6, y: 0}
+  leftOffset: {x: 0, y: 0}
   attackTime: 0.2
 --- !u!1 &2109842622020441582
 GameObject:

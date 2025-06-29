@@ -165,7 +165,6 @@ public class PlayerMove : MonoBehaviour
     private void PlayerIdle()
     {
         float move = Input.GetAxisRaw("Horizontal");
-        //animator.ResetTrigger("Attack");
         if (move != 0)
         {
             playerState = PlayerState.move;

@@ -128,7 +128,7 @@ public class MonsterController : MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Attack");
-        Vector2 offset = GetComponent<SpriteRenderer>().flipX ? leftOffset : rightOffset;
+        Vector2 offset = GetComponent<SpriteRenderer>().flipX ? rightOffset : leftOffset;
         attackCollider.offset = offset;
         state = monsterState.idle;
     }
