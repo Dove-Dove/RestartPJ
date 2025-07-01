@@ -12,7 +12,7 @@ public class SpellAttack : MonoBehaviour
     void Start()
     {
         AttackBox.SetActive(true);
-        AttackBox.GetComponent<SpriteRenderer>().enabled = false;
+        AttackBox.GetComponent<SpriteRenderer>().enabled = true;
         AttackBox.GetComponent<BoxCollider2D>().enabled = false;
     }
 

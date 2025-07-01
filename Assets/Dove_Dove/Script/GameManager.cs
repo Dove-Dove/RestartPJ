@@ -90,8 +90,6 @@ public class GameManager : MonoBehaviour
     {
         FindObj();
 
-        ui.GetComponent<UIManager>().setWaveText(nowLeval);
-
     }
 
     // Update is called once per frame

@@ -11,7 +11,6 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     public TextMeshProUGUI timeText;
 
-    public TextMeshProUGUI WaveText;
 
     [SerializeField]
     private Slider HP_Slider;
@@ -63,10 +62,6 @@ public class UIManager : MonoBehaviour
         HP_Slider.value = playerHpSlider;
     }
 
-    public void setWaveText(int wave)
-    {
-        WaveText.text = "Wave " + wave.ToString();
-    }
 
     public void SettingStateCard()
     {

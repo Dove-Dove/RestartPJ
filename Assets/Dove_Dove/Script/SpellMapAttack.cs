@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class SpellMapAttack : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject[] allSpell;
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+
+    public void mapAttackStart()
     {
-        
+        for(int i = 0; i< allSpell.Length; i++)
+        {
+            allSpell[i].SetActive(true);
+
+        }
     }
 }

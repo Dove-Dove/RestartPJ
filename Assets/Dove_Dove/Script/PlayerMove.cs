@@ -13,7 +13,6 @@ public class PlayerMove : MonoBehaviour
         jump,
         attack,
         roll,
-        hit,
         dead
     }
 
@@ -50,10 +49,9 @@ public class PlayerMove : MonoBehaviour
     private Vector2 rollDirection;
     //-------히트 
 
-    private float hitTime = 0f;
-
-    private float hitAnimeEndTime = 1.5f;
-
+    private bool hitCheck = false;
+    public float hitAnimeEndTime = 1.0f;
+    private bool isInvincible = false;
     //---------
 
     [SerializeField] private Transform groundCheck;
@@ -109,9 +107,7 @@ public class PlayerMove : MonoBehaviour
             case PlayerState.roll:
                 PlayerRoll();
                 break;
-            case PlayerState.hit:
-                PlayerHit();
-                break;
+
         }
 
 
@@ -222,6 +218,7 @@ public class PlayerMove : MonoBehaviour
     {
         animator.SetTrigger("Roll");
         animator.SetBool("Move", false);
+
         rollDirection = sr.flipX ? Vector2.left : Vector2.right;
         rollTimer = 0f;
         rolling = true;
@@ -242,27 +239,22 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
-    //----------------Hit-----------------
-    
-    private void PlayerHit()
-    {
-        hitTime += Time.deltaTime;
-        
-        if( hitTime >= hitAnimeEndTime)
-        {
-            playerState = PlayerState.idle;
-        }
-        else
-            animator.SetTrigger("Hit");
-    }
+  
+
 
     //--------애니메이션 특정한 부분에서 작동------------
 
     public void Hit(float Damages)
     {
-        nowHp -= Damages;
-        animator.SetTrigger("Hit");
-        playerState = PlayerState.hit;
+        if(!hitCheck)
+        {
+            nowHp -= Damages;
+            animator.SetTrigger("Hit");
+            //playerState = PlayerState.idle;
+
+            StartCoroutine(HitStart());
+        }
+
     }
 
 
@@ -290,7 +282,27 @@ public class PlayerMove : MonoBehaviour
         animator.SetBool("Move", false);
     }
 
-    //--------------------------------------
+    //------------코루틴--------------------------
+
+    IEnumerator HitStart( )
+    {
+        isInvincible = true;
+        float blinkInterval = 0.1f;
+
+        float elapsed = 0f;
+        while (elapsed < hitAnimeEndTime)
+        {
+            sr.enabled = false; // 스프라이트 비활성화
+            yield return new WaitForSeconds(blinkInterval);
+            sr.enabled = true;  // 다시 켬
+            yield return new WaitForSeconds(blinkInterval);
+
+            elapsed += blinkInterval * 2;
+        }
+        hitCheck = false;
+        isInvincible = false;
+    }
+
 
     private void OnDrawGizmos()
     {
