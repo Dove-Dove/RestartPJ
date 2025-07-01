@@ -32,8 +32,7 @@ public class BossController : MonoBehaviour
     public float attackDistance = 15;
     private int attackCount = 0;
 
-    private bool closeAttack = false;
-    public float closeAttackDis = 5.0f;
+
     public float moveSpeed = 2.0f;
 
     //Ä³½ºÆÃ
@@ -42,9 +41,10 @@ public class BossController : MonoBehaviour
     private bool spellAttack = false;
     private int randomCast;
 
-
-    private float teleportCooldown = 1.0f;
+    public float teleportDis = 5.0f;
+    public float teleportCooldown = 5.0f;
     private float teleportTimer = 0f;
+    private bool teleportStart = false;
 
     public GameObject Explosion;
     
@@ -84,9 +84,18 @@ public class BossController : MonoBehaviour
     void Update()
     {
         float dist = Mathf.Abs(Player.transform.position.x - transform.position.x);
-        if (dist < closeAttackDis && !closeAttack)
+        if (dist < teleportDis && !teleportStart)
         {
             PlayerCloseDistance();
+        }
+        else if(teleportStart)
+        {
+            teleportTimer += Time.deltaTime;
+            if (teleportTimer >= teleportCooldown)
+            {
+                teleportStart = false;
+                teleportTimer = 0;
+            }
         }
 
         if (delayStart)
@@ -261,12 +270,12 @@ public class BossController : MonoBehaviour
 
     private void PlayerCloseDistance()
     {
-        if (closeAttack)
+        if (teleportStart && state != BossState.attack && state != BossState.casting )
             return;
 
-        closeAttack = true;
+
         Teleport();
-        
+        teleportStart = true;
     }
 
     private void Teleport()
@@ -280,7 +289,7 @@ public class BossController : MonoBehaviour
             movePos.x += 15f;
         else
             return;
-        closeAttack = false;
+
         transform.position = movePos;
     }
 

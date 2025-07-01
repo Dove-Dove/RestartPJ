@@ -44,6 +44,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] 
     float rollDuration = 0.5f;
 
+    //구르기 속도
+    private float rollAimeSpeed = 1f;
+
     private bool rolling = false;
     private float rollTimer = 0f;
     private Vector2 rollDirection;
@@ -173,6 +176,8 @@ public class PlayerMove : MonoBehaviour
     //------------Move-------------
     private void PlayerMoveing()
     {
+        if (playerState != PlayerState.move)
+            return;
         float move = Input.GetAxisRaw("Horizontal");
 
         if (move == 0)
@@ -229,12 +234,16 @@ public class PlayerMove : MonoBehaviour
         if(rolling)
         {
             rb.velocity = rollDirection * rollSpeed;
-            rollTimer += Time.deltaTime;
+            rollTimer += Time.deltaTime * rollAimeSpeed;
+
+            animator.speed = rollDuration / rollAimeSpeed ;
+
             if (rollTimer >= rollDuration)
             {
                 rb.velocity = Vector2.zero;
                 rolling = false;
                 playerState = PlayerState.idle;
+                animator.speed = 1f;
             }
         }
 
@@ -246,7 +255,7 @@ public class PlayerMove : MonoBehaviour
 
     public void Hit(float Damages)
     {
-        if(!hitCheck)
+        if(!hitCheck && playerState != PlayerState.roll)
         {
             nowHp -= Damages;
             animator.SetTrigger("Hit");

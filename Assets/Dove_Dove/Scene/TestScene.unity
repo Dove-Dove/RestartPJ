@@ -8022,9 +8022,10 @@ MonoBehaviour:
   maxHP: 100
   scanDistance: 101
   attackDistance: 10
-  closeAttackDis: 5
   moveSpeed: 2
   Spell: {fileID: 8286802276962583556, guid: 7ffbe1712d9ca2c4e9f1815c8f1e72c2, type: 3}
+  teleportDis: 7
+  teleportCooldown: 5
   Explosion: {fileID: 1971012338505564693, guid: a895af373fb512546a1a258a929a31b7,
     type: 3}
   attackDelay: 4
@@ -9268,6 +9269,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431884941870248842, guid: d0f23957cdf8fa44db7dc790e06f72b7,
+        type: 3}
+      propertyPath: rollSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431884941870248842, guid: d0f23957cdf8fa44db7dc790e06f72b7,
+        type: 3}
+      propertyPath: rollDuration
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6431884941870248842, guid: d0f23957cdf8fa44db7dc790e06f72b7,
         type: 3}

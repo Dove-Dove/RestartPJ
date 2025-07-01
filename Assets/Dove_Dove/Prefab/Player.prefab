@@ -200,7 +200,9 @@ MonoBehaviour:
   maxHp: 100
   attackDeley: 0
   rollSpeed: 5
-  rollDuration: 0.5
+  rollDuration: 1
+  rollAimeSpeed: 1
+  hitAnimeEndTime: 1
   groundCheck: {fileID: 3238529192554650141}
   boxSize: {x: 0.85, y: 0.1}
   groundLayer:
