@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -16,28 +17,29 @@ public class MonsterController : MonoBehaviour
     }
 
     private Animator animator;
-
     private Rigidbody2D rb;
 
     private monsterState state = monsterState.idle;
-
     public float maxHP = 100;
-
     private float nowHp;
-
-    public float attackDamages;
 
     public float moveSpeed;
 
-    public float attackDistance;
 
-    private float theTime;
+    private bool turnRay = true;
+    private float turnDalay = 0;
+    public float turnTime = 1.5f;
+
+    public float attackDistance;
+    public float attackDamages;
+
+    private float theTime =0;
     public float deadTime = 2.0f;
 
     private float distance;
 
     [SerializeField] 
-    private float RayRange = 5f;
+    private float scanRange = 5f;
 
     [SerializeField]
     private LayerMask enemyLayer;
@@ -47,8 +49,6 @@ public class MonsterController : MonoBehaviour
     [SerializeField] private Vector2 leftOffset;
     [SerializeField] private float attackTime = 0.2f;
 
-    Vector3 startVec3;
-
     Vector3 target;
 
 
@@ -56,8 +56,6 @@ public class MonsterController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
-        startVec3 = gameObject.transform.position;
 
         nowHp = maxHP;
         target = Vector2.zero;
@@ -69,6 +67,17 @@ public class MonsterController : MonoBehaviour
     void Update()
     {
         RayOn();
+        if(!turnRay)
+        {
+            turnDalay += Time.deltaTime;
+            if(turnDalay >= turnTime)
+            {
+                gameObject.GetComponent<GroundCheckRay>().enabled = true;
+                turnDalay = 0;
+                turnRay = true;
+            }
+
+        }
 
         switch (state)
         {
@@ -103,7 +112,7 @@ public class MonsterController : MonoBehaviour
         animator.SetBool("Walk", true);
         float distance = Vector2.Distance(transform.position, target);
 
-        if(distance >= RayRange)
+        if(distance >= scanRange)
         {
             state = monsterState.idle;
             animator.SetBool("Walk", false);
@@ -162,9 +171,9 @@ public class MonsterController : MonoBehaviour
         // 몬스터가 바라보는 방향 계산 (Sprite 방향에 따라 flipX 판단)
         Vector2 direction = GetComponent<SpriteRenderer>().flipX ? Vector2.left : Vector2.right;
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, RayRange, enemyLayer);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, scanRange, enemyLayer);
 
-        Debug.DrawRay(transform.position, direction * RayRange, Color.red);
+        Debug.DrawRay(transform.position, direction * scanRange, Color.red);
 
         if (hit.collider != null && hit.collider.CompareTag("Player") && !(state == monsterState.attack))
         {
@@ -181,11 +190,13 @@ public class MonsterController : MonoBehaviour
     public void AttackBoxOff()
     {
         attackCollider.enabled = false;
+        ReSearch();
     }
 
     public void HitAimeEnd()
     {
         state = monsterState.idle;
+        ReSearch();
     }
 
     public void Hit(float Damages)
@@ -204,6 +215,47 @@ public class MonsterController : MonoBehaviour
         }
 
     }
+    
+    private void ReSearch()
+    {
+
+        RaycastHit2D hit1 = Physics2D.Raycast(transform.position,new Vector2(-1,0), scanRange, enemyLayer);
+        RaycastHit2D hit2 = Physics2D.Raycast(transform.position, new Vector2(1, 0), scanRange, enemyLayer);
+        Debug.DrawRay(transform.position,new Vector2(-1, 0) * scanRange, Color.red);
+        Debug.DrawRay(transform.position,new Vector2(1, 0) * scanRange, Color.red);
+        if (hit1.collider != null && hit1.collider.CompareTag("Player") && !(state == monsterState.attack))
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            state = monsterState.move;
+            target = hit1.transform.position;
+        }
+
+        if (hit2.collider != null && hit2.collider.CompareTag("Player") && !(state == monsterState.attack))
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            state = monsterState.move;
+            target = hit2.transform.position;
+        }
+    }
+
+    public void TypeHit(float Damages)
+    {
+        nowHp -= Damages;
+
+        if (nowHp < 0)
+        {
+            animator.SetTrigger("Dead");
+            state = monsterState.dead;
+        }
+    }
 
 
+    public void Trun(bool dropObj)
+    {
+        bool turn = GetComponent<SpriteRenderer>().flipX? true : false;
+        GetComponent<SpriteRenderer>().flipX = !turn;
+        if(dropObj)
+            gameObject.GetComponent<GroundCheckRay>().enabled = false;
+        turnRay = false ;
+    }
 }

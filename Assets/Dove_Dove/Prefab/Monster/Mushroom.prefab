@@ -90,6 +90,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b8fd56617352f45b6b08256bf75076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6983598551644967661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 878802199618206998}
+  m_Layer: 8
+  m_Name: TurnRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &878802199618206998
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6983598551644967661}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7, y: -0.89, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4288835324059278785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8309246693029530761
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,6 +135,7 @@ GameObject:
   - component: {fileID: 6064959797634027856}
   - component: {fileID: 3692529761148371878}
   - component: {fileID: 8317948308740639750}
+  - component: {fileID: 7669341902913319121}
   m_Layer: 8
   m_Name: Mushroom
   m_TagString: Monster
@@ -125,6 +157,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6883447580161749200}
+  - {fileID: 4976270438858322640}
+  - {fileID: 878802199618206998}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8605275147012564807
@@ -290,7 +324,7 @@ MonoBehaviour:
   moveSpeed: 5
   attackDistance: 1.5
   deadTime: 2
-  RayRange: 5
+  scanRange: 5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -298,3 +332,52 @@ MonoBehaviour:
   rightOffset: {x: 0, y: 0}
   leftOffset: {x: -2.4, y: 0}
   attackTime: 0.2
+--- !u!114 &7669341902913319121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8309246693029530761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d04de1d4d845e64f9b7ee9b41bd31c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayObj:
+  - {fileID: 8595940585561999833}
+  - {fileID: 6983598551644967661}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!1 &8595940585561999833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4976270438858322640}
+  m_Layer: 8
+  m_Name: TurnRay
+  m_TagString: Untagged
+  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4976270438858322640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8595940585561999833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7, y: -0.89, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4288835324059278785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

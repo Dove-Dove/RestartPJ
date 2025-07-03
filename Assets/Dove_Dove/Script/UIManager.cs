@@ -57,9 +57,9 @@ public class UIManager : MonoBehaviour
     }
 
     public void setPlayerHit(float playerHP)
-    {
-        float playerHpSlider = playerHP / 100;
-        HP_Slider.value = playerHpSlider;
+    { 
+        HP_Slider.value = playerHP / 100;
+
     }
 
 

@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 1823527353887152740}
   - component: {fileID: 6016515355983871599}
   - component: {fileID: 684177414216687882}
+  - component: {fileID: 5938278364161158374}
+  - component: {fileID: 1304000934122447798}
   m_Layer: 8
   m_Name: Skeleton
   m_TagString: Monster
@@ -35,6 +37,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5584101876689632454}
+  - {fileID: 4661769647353167408}
+  - {fileID: 6126305560150999137}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7210949146906502780
@@ -198,9 +202,10 @@ MonoBehaviour:
   maxHP: 20
   attackDamages: 0
   moveSpeed: 2
+  turnTime: 3
   attackDistance: 2
   deadTime: 2
-  RayRange: 5
+  scanRange: 5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -208,6 +213,39 @@ MonoBehaviour:
   rightOffset: {x: -0.6, y: 0}
   leftOffset: {x: 0, y: 0}
   attackTime: 0.2
+--- !u!114 &5938278364161158374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519570423197297319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d6c6dea7038374d8ea71476f4ed2f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  types: 0
+  typeDuration: 10
+  Damages: 10
+--- !u!114 &1304000934122447798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519570423197297319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d04de1d4d845e64f9b7ee9b41bd31c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayObj:
+  - {fileID: 5618023023585135505}
+  - {fileID: 3714504748097653347}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &2109842622020441582
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,3 +336,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b8fd56617352f45b6b08256bf75076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3714504748097653347
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6126305560150999137}
+  m_Layer: 8
+  m_Name: GroundCheckRay2
+  m_TagString: Untagged
+  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6126305560150999137
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3714504748097653347}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.25, y: -0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8895033863540889336}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5618023023585135505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4661769647353167408}
+  m_Layer: 8
+  m_Name: GroundCheckRay1
+  m_TagString: Untagged
+  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4661769647353167408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5618023023585135505}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.2, y: -0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8895033863540889336}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

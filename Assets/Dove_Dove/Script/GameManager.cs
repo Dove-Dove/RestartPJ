@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     private int PlayerEx;
 
+    private float playerHp;
+
     //Ä«¸Þ¶ó
     private GameObject Cam;
 
@@ -89,7 +91,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         FindObj();
-
+        playerHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
+        GetHp(playerHp);
     }
 
     // Update is called once per frame
@@ -186,6 +189,12 @@ public class GameManager : MonoBehaviour
            
         }
         ui.GetComponent<UIManager>().UIGetEx(PlayerEx);
+    }
+
+    public void GetHp(float hp)
+    { 
+        playerHp = hp;
+        ui.GetComponent<UIManager>().setPlayerHit(playerHp);
     }
 
 

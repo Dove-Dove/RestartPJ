@@ -15,7 +15,7 @@ public class PlayerMove : MonoBehaviour
         roll,
         dead
     }
-
+    [Header("==Components")]
     public float moveSpeed = 5f;
     public float jumpForce = 8f;
     public float maxHp = 100;
@@ -26,8 +26,17 @@ public class PlayerMove : MonoBehaviour
 
     private bool jumping = false;
 
+    //--공격관련---
     private bool attacking = false;
     private int attackNum = 1;
+    [SerializeField]
+    private float attackDeley = 0.4f;
+    [SerializeField]
+    private float delayTime = 0f;
+    [SerializeField]
+    private float attackSpeed = 1f;
+    private bool delayStart = false;
+    //----
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -35,8 +44,7 @@ public class PlayerMove : MonoBehaviour
 
     private Vector2 movePos = Vector2.zero;
 
-    [SerializeField] 
-    private float attackDeley = 0.4f;
+
 
     //-- 구르기 
     [SerializeField] 
@@ -75,12 +83,21 @@ public class PlayerMove : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         attackCollider.enabled = false;
+
     }
 
     void Update()
     {
         //isGrounded = Physics2D.Raycast(groundCheck.position, Vector2.down, groundDistance, groundMask);
         isGrounded = Physics2D.OverlapBox(groundCheck.position, boxSize, 0f, groundLayer);
+        if (delayStart)
+        {
+            delayTime += Time.deltaTime;
+            if(delayTime >= attackDeley)
+            {
+                delayStart = false;
+            }
+        }
 
         if (isGrounded)
         {
@@ -119,6 +136,10 @@ public class PlayerMove : MonoBehaviour
 
     private void Attack()
     {
+        if (delayStart)
+        {
+            return;
+        }
         Vector2 offset = sr.flipX ? leftOffset : rightOffset;
         attackCollider.offset = offset;
 
@@ -130,6 +151,7 @@ public class PlayerMove : MonoBehaviour
             else if(attackNum == 2)
                 animator.SetTrigger("Attack2");
             attacking = true;
+            animator.speed = attackSpeed;
         }
     }
 
@@ -272,8 +294,9 @@ public class PlayerMove : MonoBehaviour
         attacking = false;
         attackCollider.enabled = false;
         playerState = PlayerState.idle;
-
+        delayStart = true;
         attackNum++;
+        animator.speed = 1.0f;
         if (attackNum == 3)
             attackNum = 1;
     }
@@ -312,6 +335,10 @@ public class PlayerMove : MonoBehaviour
         isInvincible = false;
     }
 
+    public float PlayerGetHp()
+    {
+        return nowHp;
+    }
 
     private void OnDrawGizmos()
     {
@@ -321,5 +348,7 @@ public class PlayerMove : MonoBehaviour
             Gizmos.DrawWireCube(groundCheck.position, boxSize);
         }
     }
+
+
 
 }
