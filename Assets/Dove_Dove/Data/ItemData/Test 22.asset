@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13ce494fe5d37304c9b30b94309bf787, type: 3}
-  m_Name: TestItem1
+  m_Name: Test 22
   m_EditorClassIdentifier: 
-  itemName: test4
-  itemImg: {fileID: 21300000, guid: dc9f1e37e5b51e34ebfb77b910c09848, type: 3}
-  itemPrice: 456
-  itemText: qweqwghdfhhdgkdsfh
-  effects:
-  - effectType: 16
-    value: 1
+  itemName: 
+  itemImg: {fileID: 0}
+  itemPrice: 0
+  itemText: 
+  itemCondition: 0
+  effects: []

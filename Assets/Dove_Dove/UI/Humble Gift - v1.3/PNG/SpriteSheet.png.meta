@@ -1357,7 +1357,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpriteSheet_60
+      name: Line
       rect:
         serializedVersion: 2
         x: 147
@@ -1509,7 +1509,7 @@ TextureImporter:
         serializedVersion: 2
         x: 32
         y: 759
-        width: 183
+        width: 182
         height: 282
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -1924,7 +1924,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpriteSheet_89
+      name: 112
       rect:
         serializedVersion: 2
         x: 37
@@ -1945,7 +1945,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpriteSheet_90
+      name: BookB
       rect:
         serializedVersion: 2
         x: 338
@@ -2333,11 +2333,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      112: 1222318171
       AUDIOText: 1806895584
       BButton: -1324499994
+      BookB: -1304270701
       CONTROLSText: 498954614
       DISPLAYText: 1418197640
       ItemCardUi: 128076274
+      Line: 4084235
       MButton: 539064135
       MSButton: -1707919751
       PAUSEText: 1171133351
@@ -2417,7 +2420,6 @@ TextureImporter:
       SpriteSheet_57: 398281386
       SpriteSheet_59: -565146312
       SpriteSheet_6: 1783422052
-      SpriteSheet_60: 4084235
       SpriteSheet_61: -719000809
       SpriteSheet_62: 1681193212
       SpriteSheet_63: -1898984857
@@ -2441,9 +2443,7 @@ TextureImporter:
       SpriteSheet_86: 2100213628
       SpriteSheet_87: 1470450289
       SpriteSheet_88: 1049473046
-      SpriteSheet_89: 1222318171
       SpriteSheet_9: 1270113496
-      SpriteSheet_90: -1304270701
       SpriteSheet_92: 677761282
       SpriteSheet_93: -1765114326
       SpriteSheet_94: -496586937

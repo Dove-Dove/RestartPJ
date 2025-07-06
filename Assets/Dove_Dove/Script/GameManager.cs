@@ -14,12 +14,14 @@ public class GameManager : MonoBehaviour
 
     //플레이어
     private GameObject Player;
-
     private int playerLevel;
-
     private int PlayerEx;
-
     private float playerHp;
+    public List<UserItem> userGetItemData = new List<UserItem>();
+
+    public List<UserStateCard> userStateData = new List<UserStateCard>();
+
+
 
     //카메라
     private GameObject Cam;
@@ -27,8 +29,6 @@ public class GameManager : MonoBehaviour
     //UI
     private GameObject ui;
 
-    //현제 레벨 
-    public int nowLeval;
 
     //기타 세팅
     bool GameStopKeyDown = false;
@@ -54,13 +54,7 @@ public class GameManager : MonoBehaviour
         public ItemData itemData;
         public int count;
     }
-    
-
-
-
-    public List<UserItem> userGetItemData = new List<UserItem>();
-
-    public List<UserStateCard> userStateData = new List<UserStateCard>();
+   
 
 
     //플레이 타임
@@ -120,7 +114,6 @@ public class GameManager : MonoBehaviour
     }
     public void GameReStart()
     {
-
         ui.GetComponent<UIManager>().escStopGame(false);
     }
 
@@ -132,10 +125,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        nowLeval = 0;
         playerLevel = 0;
-
-
     }
 
     private void FindObj()
@@ -188,7 +178,7 @@ public class GameManager : MonoBehaviour
             ui.GetComponent<UIManager>().openStateCard();
            
         }
-        ui.GetComponent<UIManager>().UIGetEx(PlayerEx);
+        ui.GetComponent<UIManager>().UIGetMp(PlayerEx);
     }
 
     public void GetHp(float hp)
@@ -202,7 +192,7 @@ public class GameManager : MonoBehaviour
     public ItemData RanItemData()
     {
         ItemData data;
-        int randomNum = Random.Range(0, itemData.Length);
+        int randomNum = Random.Range(1, itemData.Length);
         data = itemData[randomNum];
 
         return data;
@@ -239,8 +229,11 @@ public class GameManager : MonoBehaviour
 
         if (found != null) 
             found.count++;
-        else 
+        else
+        {
             userGetItemData.Add(new UserItem { itemData = getItem, count = 1 });
+            Player.GetComponent<PlayerMove>().SettingItem(getItem);
+        }
     }
 
     public List<UserItem> SetUserItemData()
@@ -269,6 +262,12 @@ public class GameManager : MonoBehaviour
         else
             userStateData.Add(new UserStateCard { stateData = getState, count = 1 });
     }
+
+    public ItemData NullItem()
+    {
+        return itemData[0];
+    }
+
 
     public List<UserStateCard> SetUserStateData()
     {

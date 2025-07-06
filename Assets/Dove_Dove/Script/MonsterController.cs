@@ -22,28 +22,27 @@ public class MonsterController : MonoBehaviour
     private monsterState state = monsterState.idle;
     public float maxHP = 100;
     private float nowHp;
-
     public float moveSpeed;
+
+    private bool moveSearch = true;
+    private Vector3 secrchMove;
+    private float moveTime = 0.0f;
+    public float searchTime = 1.5f;
 
 
     private bool turnRay = true;
     private float turnDalay = 0;
     public float turnTime = 1.5f;
 
-    public float attackDistance;
-    public float attackDamages;
-
     private float theTime =0;
     public float deadTime = 2.0f;
 
     private float distance;
 
-    [SerializeField] 
-    private float scanRange = 5f;
-
-    [SerializeField]
-    private LayerMask enemyLayer;
-
+    public float attackDistance;
+    public float attackDamages;
+    [SerializeField] private float scanRange = 5f;
+    [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private BoxCollider2D attackCollider;
     [SerializeField] private Vector2 rightOffset;
     [SerializeField] private Vector2 leftOffset;
@@ -61,6 +60,10 @@ public class MonsterController : MonoBehaviour
         target = Vector2.zero;
 
         attackCollider.enabled = false;
+
+        secrchMove = transform.position;
+
+
     }
 
     // Update is called once per frame
@@ -78,6 +81,7 @@ public class MonsterController : MonoBehaviour
             }
 
         }
+
 
         switch (state)
         {
@@ -103,6 +107,17 @@ public class MonsterController : MonoBehaviour
     {
         animator.SetTrigger("Idle");
 
+        if(!moveSearch)
+        {
+            moveTime += Time.deltaTime;
+            if(moveTime >= searchTime)
+            {
+                moveSearch = true;
+                moveTime = 0;
+                Trun(false);
+            }
+           
+        }
     }
     void Move()
     {
@@ -110,27 +125,53 @@ public class MonsterController : MonoBehaviour
             return;
 
         animator.SetBool("Walk", true);
+
         float distance = Vector2.Distance(transform.position, target);
 
         if(distance >= scanRange)
         {
-            state = monsterState.idle;
-            animator.SetBool("Walk", false);
-            return;
+
+            if (moveSearch)
+            {
+                moveTime += Time.deltaTime;
+                if (moveTime > searchTime)
+                {
+                    moveSearch = false;
+                    moveTime = 0;
+                    state = monsterState.idle;
+                    animator.SetBool("Walk", false);
+                    return;
+                }
+                bool flip = GetComponent<SpriteRenderer>().flipX ? true : false;
+                if(flip)
+                    secrchMove.x = gameObject.transform.position.x - 2;
+                else
+                    secrchMove.x = gameObject.transform.position.x + 2;
+
+                Vector2 directions = (secrchMove - transform.position).normalized;
+                rb.velocity = new Vector2(directions.x * moveSpeed, rb.velocity.y);
+                return;
+            }
+            else
+            {
+                state = monsterState.idle;
+                animator.SetBool("Walk", false);
+                return;
+            }
+
         }
 
-        if (distance <= attackDistance)
+        else if (distance <= attackDistance)
         {
             rb.velocity = Vector2.zero;
             state = monsterState.attack;
+            moveSearch = false;
             //animator.SetBool("Walk", false);
             return;
         }
 
         Vector2 direction = (target - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-
-
 
     }
 
@@ -180,6 +221,9 @@ public class MonsterController : MonoBehaviour
             state = monsterState.move;
             target = hit.transform.position;
         }
+        else if (moveSearch)
+            state = monsterState.move;
+
     }
 
     public void AttackBoxOn()
@@ -258,4 +302,5 @@ public class MonsterController : MonoBehaviour
             gameObject.GetComponent<GroundCheckRay>().enabled = false;
         turnRay = false ;
     }
+
 }

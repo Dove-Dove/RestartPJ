@@ -199,16 +199,17 @@ MonoBehaviour:
   jumpForce: 8
   maxHp: 100
   attackDeley: 0
+  delayTime: 0
+  attackSpeed: 1
   rollSpeed: 5
   rollDuration: 1
-  rollAimeSpeed: 1
   hitAnimeEndTime: 1
   groundCheck: {fileID: 3238529192554650141}
   boxSize: {x: 0.85, y: 0.1}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  attackCollider: {fileID: 441080986285227837}
+  attackCollider: {fileID: 7532828129283460036}
   rightOffset: {x: 1.8, y: 0}
   leftOffset: {x: -0.15, y: 0}
   attackTime: 0.2
@@ -302,6 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095c7d676e40a724eb6cc5f2f2394c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  condition: 0
 --- !u!1 &7929932358665228764
 GameObject:
   m_ObjectHideFlags: 0

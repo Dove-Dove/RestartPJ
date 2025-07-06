@@ -7,13 +7,22 @@ using UnityEngine;
 public enum ItemEffect
 {
     None = 0,
-    AttackTime = 1 << 1,
-    projectileCount = 1 << 2,
-    projectileCountSize =1 << 3,
-    pickupRange = 1 << 4,
-    targetRange = 1 << 5,
-    projectileSize = 1 << 6,
+    AttackDamage = 1 << 1,
+    AttackDelay = 1 << 2,
+    AttackSpeed = 1 << 3,
+    ConditionPower = 1 << 4,
+    ConditionTime = 1 << 5,
+    RollingSpeed = 1 << 6,
+    RollDuration = 1 << 7,
 
+}
+
+public enum ItemTpyes
+{
+    None = 0,
+    Weapon = 1 << 1,
+    Armor = 1 << 2,
+    Shoes = 1 << 3,
 }
 
 [CreateAssetMenu(fileName = "Item Data", menuName = "Scriptable/Item Data", order = int.MaxValue)]
@@ -36,11 +45,21 @@ public class ItemData : ScriptableObject
     private string itemText;
     public string ItemText => itemText;
 
+    [SerializeField]
+    private ItemTpyes itemType;
+    public ItemTpyes ItemType => itemType;
+
+    [SerializeField]
+    private Condition itemCondition;
+    public Condition ItemCondition => itemCondition;
+
     [System.Serializable]
     public class ItemDatas
     {
         public ItemEffect effectType; // 
         public float value;           //
+    
+
     }
 
     [SerializeField]

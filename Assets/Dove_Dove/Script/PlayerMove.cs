@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.Playables;
+using static ItemData;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -54,7 +55,6 @@ public class PlayerMove : MonoBehaviour
 
     //구르기 속도
     private float rollAimeSpeed = 1f;
-
     private bool rolling = false;
     private float rollTimer = 0f;
     private Vector2 rollDirection;
@@ -70,7 +70,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded;
 
-    [SerializeField] private BoxCollider2D attackCollider;
+    [SerializeField] private GameObject attackCollider;
     [SerializeField] private Vector2 rightOffset;
     [SerializeField] private Vector2 leftOffset;
     [SerializeField] private float attackTime = 0.2f;
@@ -82,7 +82,7 @@ public class PlayerMove : MonoBehaviour
         nowHp = maxHp;
         sr = GetComponent<SpriteRenderer>();
 
-        attackCollider.enabled = false;
+        attackCollider.GetComponent<BoxCollider2D>().enabled = false;
 
     }
 
@@ -141,7 +141,7 @@ public class PlayerMove : MonoBehaviour
             return;
         }
         Vector2 offset = sr.flipX ? leftOffset : rightOffset;
-        attackCollider.offset = offset;
+        attackCollider.GetComponent<BoxCollider2D>().offset = offset;
 
         if (!attacking)
         {
@@ -280,19 +280,21 @@ public class PlayerMove : MonoBehaviour
         if(!hitCheck && playerState != PlayerState.roll)
         {
             nowHp -= Damages;
+            GameManager.Instance.GetHp(nowHp);
+
             animator.SetTrigger("Hit");
             //playerState = PlayerState.idle;
 
             StartCoroutine(HitStart());
         }
-
+        
     }
 
 
     public void AttackEnd()
     {
         attacking = false;
-        attackCollider.enabled = false;
+        attackCollider.GetComponent<BoxCollider2D>().enabled = false;
         playerState = PlayerState.idle;
         delayStart = true;
         attackNum++;
@@ -303,7 +305,7 @@ public class PlayerMove : MonoBehaviour
     
     public void AttackBoxOn()
     {
-        attackCollider.enabled = true;
+        attackCollider.GetComponent<BoxCollider2D>().enabled = true;
     }
 
 
@@ -349,6 +351,34 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public void SettingItem(ItemData data)
+    {
+        attackCollider.GetComponent<PlayerAttack>().playerAttackType(data.ItemCondition);
+        foreach (var itemEffect in data.Effects)
+        {
+            switch(itemEffect.effectType)
+            {
+                case ItemEffect.AttackDelay:
+                    attackDeley += itemEffect.value;
+                    break;
+                case ItemEffect.AttackSpeed:
+                    attackSpeed+= itemEffect.value;
+                    break;
+                case ItemEffect.ConditionPower:
+                    attackCollider.GetComponent<PlayerAttack>().setDamages(itemEffect.value);
+                    break;
+                case ItemEffect.ConditionTime:
+                    attackCollider.GetComponent<PlayerAttack>().SetTime(itemEffect.value);
+                    break;
+                case ItemEffect.RollingSpeed:
+                    attackSpeed += itemEffect.value;
+                    break;
+                case ItemEffect.RollDuration:
+                    rollDuration += itemEffect.value;
+                    break;
+            }
+        }
+    }
 
 
 }

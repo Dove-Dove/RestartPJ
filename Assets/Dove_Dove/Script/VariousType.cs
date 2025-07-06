@@ -4,40 +4,36 @@ using UnityEngine;
 
 public class VariousType : MonoBehaviour
 {
-    public enum Type
-    {
-        None,
-        poison,
-        brun,
-        frostbite,
+    private Condition condition = Condition.None;
 
-    }
-    public Type types = Type.None;
-    public float typeDuration = 10f;
-    public float Damages =10.0f;
-    private float typeAttackTime = 0;
+    private float typeDuration = 10f;
+    private float Damages =0f;
+    private float typeAttackTime = 0.1f;
+
+    private float setTime = 0;
     // Start is called before the first frame update
 
     // Update is called once per frame
     void Update()
     {
-        switch(types)
+        switch(condition)
         {
-            case Type.poison:
+            case Condition.poison:
                 Posison();
                 break;
-            case Type.brun:
+            case Condition.brun:
                 Brun();
                 break;
         }
+
     }
 
     void Posison()
     {
         typeAttackTime += Time.deltaTime;
         float attackTime = 1.0f;
-        if (typeAttackTime >= 10.0f)
-            types = Type.None;
+        if (typeAttackTime >= setTime)
+            condition = Condition.None;
         else
             StartCoroutine(RunTimeDamages(attackTime));
     }
@@ -47,7 +43,7 @@ public class VariousType : MonoBehaviour
         typeAttackTime += Time.deltaTime;
         float attackTime = 2.0f;
         if (typeAttackTime >= 10.0f)
-            types = Type.None;
+            condition = Condition.None;
         else
             StartCoroutine(RunTimeDamages(attackTime));
     }
@@ -56,5 +52,12 @@ public class VariousType : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTiem);
         gameObject.GetComponent<MonsterController>().TypeHit(Damages);
+    }
+
+    public void HitType(Condition HitType,float time, float damage)
+    {
+        condition = HitType;
+        setTime = time;
+        Damages = damage;
     }
 }

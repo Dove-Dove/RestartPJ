@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Slider HP_Slider;
     [SerializeField]
-    private Slider EX_Slider;
+    private Slider MP_Slider;
 
     public GameObject[] statUiAll;
 
@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour
 
     public GameObject userItemInven;
 
+    //표시용 리스트
     private List<UserItem> userItemData = new List<UserItem>();
 
     public int DataCount = 0;
@@ -38,7 +39,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        EX_Slider.value = 0;
+
     }
 
     // Update is called once per frame
@@ -51,15 +52,14 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void UIGetEx(float ex)
+    public void UIGetMp(float mp)
     {
-        EX_Slider.value = ex / 100;
+        MP_Slider.value = mp / 100;
     }
 
     public void setPlayerHit(float playerHP)
-    { 
+    {
         HP_Slider.value = playerHP / 100;
-
     }
 
 
@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
             Time.timeScale = 0;
             ActiveStopPanel(true);
             pauseMenu.GetComponent<StopUi>().moveUi(true);
-            userItemData = GameManager.Instance.SetUserItemData();
+            userItemData = Instance.SetUserItemData();
             userItemInven.GetComponent<UserStopStateUI>().SetItem(userItemData);
         }
         else
@@ -137,7 +137,7 @@ public class UIManager : MonoBehaviour
             gameObj.SetActive(false);
             GKeyUi.SetActive(false);        
             itemDescription.SetActive(false);
-            GameManager.Instance.AddItem(itemData);
+            Instance.AddItem(itemData);
 
         }
 

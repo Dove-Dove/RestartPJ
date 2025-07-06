@@ -5,12 +5,9 @@ using UnityEngine;
 public enum StatCardEffect
 {
     None = 0,
-    PowerUp = 1 << 0,
-    SpeedUp = 1 << 1,
-    HPUp = 1 << 2,
-    PowerDown = 1 << 3,
-    SpeedDown = 1 << 4,
-    HpDown = 1 << 5,
+    Power = 1 << 0,
+    Speed = 1 << 1,
+    MaxHP = 1 << 2,
 
 }
 
