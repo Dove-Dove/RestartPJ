@@ -35,6 +35,16 @@ public class PlayerAttack : MonoBehaviour
         conditionTime += time;
     }
 
+    public void RemoveDamages(float damage)
+    {
+        conditionDamages -= damage;
+    }
+
+    public void RemoveTime(float time)
+    {
+        conditionTime -= time;
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {

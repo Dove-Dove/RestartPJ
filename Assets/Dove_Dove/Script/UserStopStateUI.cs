@@ -1,37 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static GameManager;
 
 public class UserStopStateUI : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject[] ItemImg;
+    public GameObject[] PlayerItemSlot;
 
+    public Text SkillName;
+    public Text SkillText;
 
-    void Start()
+    
+
+    public void SetItem()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SetItem(List<UserItem> settingItem)
-    {
-        if(settingItem == null)
+        for (int i = 0; i < PlayerItemSlot.Length; i++)
         {
-            Debug.LogWarning("NULL»óÅÂ.");
-            return;
+            PlayerItemSlot[i].GetComponent<ItemSlot>().SetItem();
         }
-        for (int i = 0; i < settingItem.Count; i++)
-        {
-            ItemImg[i].GetComponent<ItemSlot>().SetItem(settingItem[i].itemData);
-        }
+
+
     }
+
 }

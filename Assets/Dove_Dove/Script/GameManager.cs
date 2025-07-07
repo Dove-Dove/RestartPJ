@@ -17,7 +17,11 @@ public class GameManager : MonoBehaviour
     private int playerLevel;
     private int PlayerEx;
     private float playerHp;
-    public List<UserItem> userGetItemData = new List<UserItem>();
+    //public List<UserItem> userGetItemData = new List<UserItem>(3);
+
+    public ItemData playerWeapon;
+    public ItemData playerArmor;
+    public ItemData playerShoes;
 
     public List<UserStateCard> userStateData = new List<UserStateCard>();
 
@@ -45,13 +49,6 @@ public class GameManager : MonoBehaviour
     public class UserStateCard
     {
         public StatCardData stateData;
-        public int count;
-    }
-    //유저 아이템 가지고 있는지 확인 
-    [System.Serializable]
-    public class UserItem
-    {
-        public ItemData itemData;
         public int count;
     }
    
@@ -213,32 +210,59 @@ public class GameManager : MonoBehaviour
 
     public void AddItem(ItemData getItem)
     {
-        UserItem found = null;
+        //UserItem found = null;
 
-        //아이템이 있는지 확인 
-        foreach (UserItem item in userGetItemData)
+        ////아이템이 있는지 확인 
+        //foreach (UserItem item in userGetItemData)
+        //{
+        //    if (item.itemData.ItemType == getItem.ItemType)
+        //    {
+        //        found = item;
+        //        break;
+        //    }
+        //}
+
+        ////if (found != null) 
+        ////    found.count++;
+        //if(found == null)
+        //{
+        //    //userGetItemData.Add(new UserItem { itemData = getItem, count = 1 });
+        //    Player.GetComponent<PlayerMove>().SettingItem(getItem);
+        //}
+
+        switch(getItem.ItemType)
         {
-            if (item.itemData == getItem)
-            {
-                found = item;
+            case ItemTpyes.Weapon:
+                playerWeapon = getItem;
                 break;
-            }
+            case ItemTpyes.Armor:
+                playerArmor = getItem;
+                break;
+            case ItemTpyes.Shoes:
+                playerShoes = getItem;
+                break;
         }
+        Player.GetComponent<PlayerMove>().SettingItem(getItem);
 
-        //var found = userGetItemData.Find(x => x.itemData == get);
-
-        if (found != null) 
-            found.count++;
-        else
-        {
-            userGetItemData.Add(new UserItem { itemData = getItem, count = 1 });
-            Player.GetComponent<PlayerMove>().SettingItem(getItem);
-        }
     }
 
-    public List<UserItem> SetUserItemData()
+    public void RemoveItem(ItemData getItem)
     {
-        return userGetItemData;
+
+        Player.GetComponent<PlayerMove>().SettingItem(getItem);
+    }
+
+    public ItemData SetPlayerWapon()
+    {
+        return playerWeapon;
+    }
+    public ItemData SetPlayerArmor()
+    {
+        return playerArmor;
+    }
+    public ItemData SetPlayerShoes()
+    {
+        return playerShoes;
     }
 
     public void AddState(StatCardData getState)

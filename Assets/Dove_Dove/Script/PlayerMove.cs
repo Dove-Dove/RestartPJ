@@ -380,5 +380,32 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
+    public void RemoveItem(ItemData data)
+    {
+        attackCollider.GetComponent<PlayerAttack>().playerAttackType(data.ItemCondition);
+        foreach (var itemEffect in data.Effects)
+        {
+            switch (itemEffect.effectType)
+            {
+                case ItemEffect.AttackDelay:
+                    attackDeley -= itemEffect.value;
+                    break;
+                case ItemEffect.AttackSpeed:
+                    attackSpeed -= itemEffect.value;
+                    break;
+                case ItemEffect.ConditionPower:
+                    attackCollider.GetComponent<PlayerAttack>().RemoveDamages(itemEffect.value);
+                    break;
+                case ItemEffect.ConditionTime:
+                    attackCollider.GetComponent<PlayerAttack>().RemoveTime(itemEffect.value);
+                    break;
+                case ItemEffect.RollingSpeed:
+                    attackSpeed += itemEffect.value;
+                    break;
+                case ItemEffect.RollDuration:
+                    rollDuration += itemEffect.value;
+                    break;
+            }
+        }
+    }
 }

@@ -28,7 +28,6 @@ public class UIManager : MonoBehaviour
     public GameObject userItemInven;
 
     //표시용 리스트
-    private List<UserItem> userItemData = new List<UserItem>();
 
     public int DataCount = 0;
 
@@ -97,8 +96,7 @@ public class UIManager : MonoBehaviour
             Time.timeScale = 0;
             ActiveStopPanel(true);
             pauseMenu.GetComponent<StopUi>().moveUi(true);
-            userItemData = Instance.SetUserItemData();
-            userItemInven.GetComponent<UserStopStateUI>().SetItem(userItemData);
+            userItemInven.GetComponent<UserStopStateUI>().SetItem();
         }
         else
         {

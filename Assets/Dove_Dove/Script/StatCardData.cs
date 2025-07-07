@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//계획변경으로 인한 중단 (기타 오류 및 수정 사항이 있으면 환경에 맞게 수정)
+
 [System.Flags]
 public enum StatCardEffect
 {
     None = 0,
-    Power = 1 << 0,
-    Speed = 1 << 1,
-    MaxHP = 1 << 2,
-
+    Cuting = 1 << 1,
+    Thunder = 1 << 2,
+    HolyCross = 1 << 3,
 }
 
 

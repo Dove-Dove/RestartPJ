@@ -5,10 +5,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static ItemData;
 
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
-    IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
-
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler                                                         
 {
+    public enum EquipmentType
+    {
+        None = 0,
+        Weapon = 1 << 1,
+        Armor = 1 << 2,
+        Shoes = 1 << 3,
+    }
     // Start is called before the first frame update
     public GameObject itemDescription;
     public Image slotImg;
@@ -16,21 +21,16 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private Vector2 ViewUIPos = Vector2.zero;
 
-
     RectTransform rect;
 
-    private Transform originalParent;
-    private Canvas canvas;
+    public EquipmentType playerType = EquipmentType.None;
 
     void Start()
     {
         slotImg = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
 
-        itemData = GameManager.Instance.NullItem();
-
-        SetItem(itemData);
+        StartSetting();
 
         //아이템 설명 창 나오는 위치
         ViewUIPos = rect.position;
@@ -45,9 +45,27 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     }
 
-    public void SetItem(ItemData setItemData)
+    public void StartSetting()
     {
-        itemData = setItemData;
+        itemData = GameManager.Instance.NullItem();
+        slotImg.sprite = itemData.ItemImg;
+    }
+
+    public void SetItem()
+    {
+        switch(playerType)
+        {
+            case EquipmentType.Weapon:
+                itemData = GameManager.Instance.SetPlayerWapon();
+                break;
+            case EquipmentType.Armor:
+                itemData = GameManager.Instance.SetPlayerArmor();
+                break;
+            case EquipmentType.Shoes:
+                itemData = GameManager.Instance.SetPlayerShoes();
+                break;
+        }
+
         slotImg.sprite = itemData.ItemImg;
 
     }
@@ -69,6 +87,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemDescription.SetActive(false);
     }
 
+
+
+}
+
+/* -- 제거 (사유 : 구현 시간은 둘쨰치고 이게 로그 라이크 처럼 만들려고 했는대 그렇기에는 무기를 실시간으로
+ * 변경해서 공격할거 같음)
+ //, IDragHandler, IEndDragHandler, IDropHandler
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (itemData.ItemName == "null")
@@ -116,5 +141,4 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         other.SetItem(this.itemData);
         this.SetItem(temp);
     }
-
-}
+ */
