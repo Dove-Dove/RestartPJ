@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb19e2d86b6ffdf4cacdac06eaee0411, type: 3}
   m_Name: Thunder
   m_EditorClassIdentifier: 
-  playerSkill: 0
-  skillObj: {fileID: 0}
+  playerSkill: 4
   statCardImg: {fileID: 0}
+  statName: Thunder
   statText: 

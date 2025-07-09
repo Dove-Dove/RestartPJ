@@ -31,6 +31,8 @@ public class StatCardUI : MonoBehaviour
 
     private StatCardData statCard;
 
+    private PlayerSkillData skillCard;
+
     //기타 애니메이션 코드로 추가
     RectTransform rect;
 
@@ -74,13 +76,23 @@ public class StatCardUI : MonoBehaviour
         }
     }
 
-    public void SetingStatUi(StatCardData getState)
+    //public void SetingStatUi(StatCardData getState)
+    //{
+    //    statCard = getState;
+    //    animator.enabled = true;
+    //    statName.text = statCard.StatCardName;
+    //    statText.text = statCard.StatExplanation;
+    //    UiImg.sprite = statCard.StatCardImg;
+
+    //}
+
+    public void SetingSkillCardUi(PlayerSkillData getState)
     {
-        statCard = getState;
+        skillCard = getState;
         animator.enabled = true;
-        statName.text = statCard.StatCardName;
-        statText.text = statCard.StatExplanation;
-        UiImg.sprite = statCard.StatCardImg;
+        statName.text = skillCard.StatName;
+        statText.text = skillCard.StatText;
+        UiImg.sprite = skillCard.StatCardImg;
 
     }
 

@@ -67,6 +67,7 @@ public class UIManager : MonoBehaviour
 
         List<int> usedIndices = new List<int>();
 
+
         for (int count = 0; count < statUiAll.Length; count++)
         {
             int randNum;
@@ -79,11 +80,13 @@ public class UIManager : MonoBehaviour
             while (usedIndices.Contains(randNum));
 
             usedIndices.Add(randNum); // 중복 방지용 저장
-            StatCardData stat = Instance.RanStatCardDate(randNum);
+            //StatCardData stat = Instance.RanStatCardDate(randNum);
+            PlayerSkillData skillCard = Instance.RanSkillCardData(randNum);
 
-            statUiAll[count].GetComponent<StatCardUI>().SetingStatUi(
-                stat
-            );
+            //statUiAll[count].GetComponent<StatCardUI>().SetingStatUi(stat);
+            //statUiAll[count].SetActive(true);
+
+            statUiAll[count].GetComponent<StatCardUI>().SetingSkillCardUi(skillCard);
             statUiAll[count].SetActive(true);
         }
     }

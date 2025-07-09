@@ -14,9 +14,10 @@ public class PlayerMove : MonoBehaviour
         jump,
         attack,
         roll,
+        skill,
         dead
     }
-    [Header("==Components")]
+    [Header("==PlayerSetting")]
     public float moveSpeed = 5f;
     public float jumpForce = 8f;
     public float maxHp = 100;
@@ -27,6 +28,7 @@ public class PlayerMove : MonoBehaviour
 
     private bool jumping = false;
 
+    [Header("==PlayerAttack")]
     //--공격관련---
     private bool attacking = false;
     private int attackNum = 1;
@@ -37,6 +39,17 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     private float attackSpeed = 1f;
     private bool delayStart = false;
+
+    [Header("==PlayerSkill")]
+    //플레이어 스킬
+    public GameObject PlayerSkillBox;
+    PlayerSkillData skill;
+    private bool skillOn = false;
+
+    public GameObject TestSkill;
+
+    Vector2 skillLeft = new Vector2(2.14f, 0.31f);
+    Vector2 skillRight = new Vector2(-2.14f, 0.31f);
     //----
 
     private Animator animator;
@@ -127,7 +140,9 @@ public class PlayerMove : MonoBehaviour
             case PlayerState.roll:
                 PlayerRoll();
                 break;
-
+            case PlayerState.skill:
+                SkillAttack();
+                break;
         }
 
 
@@ -153,8 +168,41 @@ public class PlayerMove : MonoBehaviour
             attacking = true;
             animator.speed = attackSpeed;
         }
+
+    }
+    //skill------------------
+    private void SkillAttack()
+    {
+        if (delayStart)
+        {
+            return;
+        }
+        if (skillOn)
+            return;
+
+        Vector2 playerPos = transform.position;
+        playerPos.y += 1.93f;
+        TestSkill.SetActive(true);
+        TestSkill.GetComponent<SpawnSkill>().StartSkill(playerPos);
+        playerState = PlayerState.idle;
+        //if (skill.PlayerSkill == PlayerSkill.None && !skillOn)
+        //{
+        //animator.SetTrigger("Skill");
+        //skillOn = true;
+        //animator.speed = 0.65f;
+        //}
+        //else if (skill.PlayerSkill == PlayerSkill.Thunder)
+        //{
+
+        //}
+        //else if(skill.PlayerSkill == PlayerSkill.HolyCross)
+        //{
+
+        //}
+
     }
 
+    //----------Controller--------------
 
     private void KeyController()
     {
@@ -179,7 +227,12 @@ public class PlayerMove : MonoBehaviour
             PlayerJump();
         }
 
-
+        else if(Input.GetKeyDown(KeyCode.Q) && !attacking &&
+            playerState != PlayerState.jump && !jumping && !rolling)
+        {
+            playerState = PlayerState.skill;
+            SkillAttack();
+        }
 
     }
     //-----------Idle-------------
@@ -280,6 +333,8 @@ public class PlayerMove : MonoBehaviour
         if(!hitCheck && playerState != PlayerState.roll)
         {
             nowHp -= Damages;
+            if (nowHp <= 0)
+                return;
             GameManager.Instance.GetHp(nowHp);
 
             animator.SetTrigger("Hit");
@@ -288,6 +343,14 @@ public class PlayerMove : MonoBehaviour
             StartCoroutine(HitStart());
         }
         
+    }
+
+    public void Healing(float heal)
+    {
+        nowHp += heal;
+        if (nowHp >= maxHp)
+            nowHp = maxHp;
+        GameManager.Instance.GetHp(nowHp);
     }
 
 
@@ -316,6 +379,22 @@ public class PlayerMove : MonoBehaviour
         animator.SetBool("Move", false);
     }
 
+    //이쪽 스킬은 플레이어쪽에 붙어있는 스킬임
+    public void SkillStart()
+    {
+        Debug.Log("SkillStart 호출됨");
+        PlayerSkillBox.SetActive(true);
+        Vector2 offset = sr.flipX ? skillRight : skillLeft; //일부러 반대로 넣었음 
+        PlayerSkillBox.transform.localPosition = offset;
+        PlayerSkillBox.GetComponent<SpriteRenderer>().flipX = sr.flipX ? false: true;
+    }
+    public void SkillEnd()
+    {
+        playerState = PlayerState.idle;
+        animator.speed = 1f;
+        skillOn = false;
+
+    }
     //------------코루틴--------------------------
 
     IEnumerator HitStart( )
@@ -335,6 +414,11 @@ public class PlayerMove : MonoBehaviour
         }
         hitCheck = false;
         isInvincible = false;
+    }
+
+    public float PlayerGetMaxHp()
+    {
+        return maxHp;
     }
 
     public float PlayerGetHp()
@@ -407,5 +491,11 @@ public class PlayerMove : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void setPlayerSkill(PlayerSkillData SetSkill)
+    {
+        skill = SetSkill;
+        PlayerSkillBox.GetComponent<Skill>().SetSkillType(skill);
     }
 }

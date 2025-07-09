@@ -20,12 +20,12 @@ public class PlayerSkillData : ScriptableObject
     public PlayerSkill PlayerSkill => playerSkill;
 
     [SerializeField]
-    private GameObject skillObj;
-    public GameObject SkillObj => skillObj;
-
-    [SerializeField]
     private Sprite statCardImg;
     public Sprite StatCardImg => statCardImg;
+
+    [SerializeField]
+    private string statName;
+    public string StatName => statName;
 
     [SerializeField]
     private string statText;

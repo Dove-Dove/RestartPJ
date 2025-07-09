@@ -16,7 +16,8 @@ public class GameManager : MonoBehaviour
     private GameObject Player;
     private int playerLevel;
     private int PlayerEx;
-    private float playerHp;
+    private float playerMaxHp;
+    private float playerNowHp;
     //public List<UserItem> userGetItemData = new List<UserItem>(3);
 
     public ItemData playerWeapon;
@@ -38,7 +39,7 @@ public class GameManager : MonoBehaviour
     bool GameStopKeyDown = false;
 
     //데이터 등록
-
+    public PlayerSkillData[] skillDatas;
     public StatCardData[] statCardDatas;
 
     public ItemData[] itemData;
@@ -82,8 +83,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         FindObj();
-        playerHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
-        GetHp(playerHp);
+
+        playerMaxHp = Player.GetComponent<PlayerMove>().PlayerGetMaxHp();
+        playerNowHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
+        GetHp(playerNowHp);
     }
 
     // Update is called once per frame
@@ -165,6 +168,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //원래는 스킬로 할려고 했는대 이미 어느정도 한게 있어서 현상 유지
     public void GetEx(int ex)
     {
         PlayerEx += ex;
@@ -179,9 +183,11 @@ public class GameManager : MonoBehaviour
     }
 
     public void GetHp(float hp)
-    { 
-        playerHp = hp;
-        ui.GetComponent<UIManager>().setPlayerHit(playerHp);
+    {
+        playerNowHp = hp;
+
+
+        ui.GetComponent<UIManager>().setPlayerHit(playerNowHp);
     }
 
 
@@ -198,13 +204,18 @@ public class GameManager : MonoBehaviour
 
     public StatCardData RanStatCardDate(int getNum)
     {
-        StatCardData statCard;
-        statCard = statCardDatas[getNum];
-        return statCard;
+        StatCardData skillCard;
+        skillCard = statCardDatas[getNum];
+        return skillCard;
 
     }
 
-
+    public PlayerSkillData RanSkillCardData(int getNum)
+    {
+        PlayerSkillData statCard;
+        statCard = skillDatas[getNum];
+        return statCard;
+    }
 
 
 
