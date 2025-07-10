@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Playables;
 using static ItemData;
@@ -21,12 +22,14 @@ public class PlayerMove : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 8f;
     public float maxHp = 100;
+    public int money = 0;
 
     private PlayerState playerState = PlayerState.idle;
     
     private float nowHp;
 
     private bool jumping = false;
+    public GameObject ui;
 
     [Header("==PlayerAttack")]
     //--공격관련---
@@ -43,7 +46,7 @@ public class PlayerMove : MonoBehaviour
     [Header("==PlayerSkill")]
     //플레이어 스킬
     public GameObject PlayerSkillBox;
-    PlayerSkillData skill;
+    public PlayerSkillData skill;
     private bool skillOn = false;
 
     public GameObject TestSkill;
@@ -96,7 +99,7 @@ public class PlayerMove : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         attackCollider.GetComponent<BoxCollider2D>().enabled = false;
-
+        
     }
 
     void Update()
@@ -173,32 +176,44 @@ public class PlayerMove : MonoBehaviour
     //skill------------------
     private void SkillAttack()
     {
-        if (delayStart)
+        if (delayStart || skillOn)
+            return;
+        skillOn = true;
+        if (TestSkill == null)
         {
+            Debug.LogWarning("TestSkill 프리팹이 할당되지 않았습니다.");
             return;
         }
-        if (skillOn)
-            return;
+ 
 
-        Vector2 playerPos = transform.position;
-        playerPos.y += 1.93f;
-        TestSkill.SetActive(true);
-        TestSkill.GetComponent<SpawnSkill>().StartSkill(playerPos);
-        playerState = PlayerState.idle;
-        //if (skill.PlayerSkill == PlayerSkill.None && !skillOn)
-        //{
-        //animator.SetTrigger("Skill");
-        //skillOn = true;
-        //animator.speed = 0.65f;
-        //}
-        //else if (skill.PlayerSkill == PlayerSkill.Thunder)
-        //{
 
-        //}
-        //else if(skill.PlayerSkill == PlayerSkill.HolyCross)
-        //{
 
-        //}
+
+        if (skill.PlayerSkill == PlayerSkill.Cuting && !skillOn)
+        {
+            animator.SetTrigger("Skill");
+            animator.speed = 0.65f;
+        }
+
+        else if (skill.PlayerSkill == PlayerSkill.Thunder)
+        {
+
+        }
+        else if (skill.PlayerSkill == PlayerSkill.HolyCross)
+        {
+
+            Vector2 playerPos = transform.position;
+            playerPos.y += 1.93f;
+
+            GameObject clone = Instantiate(TestSkill, playerPos, transform.rotation);
+            SpawnSkill spawn = clone.GetComponent<SpawnSkill>();
+            if (spawn != null)
+            {
+                spawn.StartSkill(skill);
+            }
+            ui.GetComponent<UIManager>().CallDonwSkill(4.0f);
+        }
+
 
     }
 
@@ -392,8 +407,13 @@ public class PlayerMove : MonoBehaviour
     {
         playerState = PlayerState.idle;
         animator.speed = 1f;
-        skillOn = false;
 
+
+    }
+
+    public void SkillSetOn()
+    {
+        skillOn = false;
     }
     //------------코루틴--------------------------
 
@@ -424,6 +444,16 @@ public class PlayerMove : MonoBehaviour
     public float PlayerGetHp()
     {
         return nowHp;
+    }
+
+    public void getMoney(int getMoeny)
+    {
+        money += getMoeny;
+    }
+
+    public int setMoney()
+    {
+        return money;
     }
 
     private void OnDrawGizmos()
@@ -496,6 +526,5 @@ public class PlayerMove : MonoBehaviour
     public void setPlayerSkill(PlayerSkillData SetSkill)
     {
         skill = SetSkill;
-        PlayerSkillBox.GetComponent<Skill>().SetSkillType(skill);
     }
 }

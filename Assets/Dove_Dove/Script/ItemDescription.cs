@@ -15,6 +15,7 @@ public class ItemDescription : MonoBehaviour
 
     public TextMeshProUGUI ItemText;
 
+
     RectTransform rect;
 
     Vector2 backPos = Vector2.zero;
@@ -31,11 +32,18 @@ public class ItemDescription : MonoBehaviour
         
     }
 
-    public void SettingDescription(ItemData itemData)
+    public void SettingDescription(ItemData itemData , bool SaleItem)
     {
         ItemName.text = itemData.name;
         ItemImg.sprite = itemData.ItemImg;
-        ItemPrice.text = itemData.ItemPrice.ToString();
+        if(SaleItem)
+        {
+            ItemPrice.text = itemData.ItemPrice.ToString();
+        }
+        else
+        {
+            ItemPrice.text = itemData.ItemPrice.ToString(" ");
+        }
         ItemText.text = itemData.ItemText;
 
     }

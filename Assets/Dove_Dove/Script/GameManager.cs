@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     private int PlayerEx;
     private float playerMaxHp;
     private float playerNowHp;
+    private int playerMoney;
+
+    private PlayerSkillData playerSkill_GameManger;
     //public List<UserItem> userGetItemData = new List<UserItem>(3);
 
     public ItemData playerWeapon;
@@ -202,19 +205,38 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public StatCardData RanStatCardDate(int getNum)
+    public bool BuyItem(int money)
     {
-        StatCardData skillCard;
-        skillCard = statCardDatas[getNum];
-        return skillCard;
-
+        playerMoney = Player.GetComponent<PlayerMove>().setMoney();
+        if (playerMoney >= money)
+        {
+            playerMoney -= money;
+            return true;
+        }
+        else
+            return false;
     }
+
+    //public StatCardData RanStatCardDate(int getNum)
+    //{
+    //    StatCardData skillCard;
+    //    skillCard = statCardDatas[getNum];
+    //    return skillCard;
+
+    //}
 
     public PlayerSkillData RanSkillCardData(int getNum)
     {
         PlayerSkillData statCard;
         statCard = skillDatas[getNum];
         return statCard;
+    }
+
+    public void SetPlayerSkill(PlayerSkillData setData)
+    {
+        playerSkill_GameManger = setData;
+        Player.GetComponent<PlayerMove>().setPlayerSkill(playerSkill_GameManger);
+        ui.GetComponent<UIManager>().SetSkillImg(playerSkill_GameManger.StatCardImg);
     }
 
 
@@ -259,7 +281,6 @@ public class GameManager : MonoBehaviour
 
     public void RemoveItem(ItemData getItem)
     {
-
         Player.GetComponent<PlayerMove>().SettingItem(getItem);
     }
 
@@ -276,27 +297,27 @@ public class GameManager : MonoBehaviour
         return playerShoes;
     }
 
-    public void AddState(StatCardData getState)
-    {
-        UserStateCard found = null;
+    //public void AddState(StatCardData getState)
+    //{
+    //    UserStateCard found = null;
 
-        //아이템이 있는지 확인 
-        foreach (UserStateCard state in userStateData)
-        {
-            if (state.stateData == getState)
-            {
-                found = state;
-                break;
-            }
-        }
+    //    //아이템이 있는지 확인 
+    //    foreach (UserStateCard state in userStateData)
+    //    {
+    //        if (state.stateData == getState)
+    //        {
+    //            found = state;
+    //            break;
+    //        }
+    //    }
 
-        //var found = userGetItemData.Find(x => x.itemData == get);
+    //    //var found = userGetItemData.Find(x => x.itemData == get);
 
-        if (found != null)
-            found.count++;
-        else
-            userStateData.Add(new UserStateCard { stateData = getState, count = 1 });
-    }
+    //    if (found != null)
+    //        found.count++;
+    //    else
+    //        userStateData.Add(new UserStateCard { stateData = getState, count = 1 });
+    //}
 
     public ItemData NullItem()
     {

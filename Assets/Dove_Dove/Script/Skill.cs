@@ -20,10 +20,10 @@ public class Skill : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
     }
 
-    public void SetSkillType(PlayerSkillData setSkill)
-    {
-        playerSkillData = setSkill;
-    }
+    //public void SetSkillType(PlayerSkillData setSkill)
+    //{
+    //    playerSkillData = setSkill;
+    //}
 
     public void SkillAttackStart()
     {

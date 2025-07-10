@@ -16,7 +16,12 @@ public class UIManager : MonoBehaviour
     private Slider HP_Slider;
     [SerializeField]
     private Slider MP_Slider;
+    public Image SkillImg;
 
+    private GameObject player;
+
+
+    public GameObject StatCards;
     public GameObject[] statUiAll;
 
     public GameObject stopPanel;
@@ -27,6 +32,8 @@ public class UIManager : MonoBehaviour
 
     public GameObject userItemInven;
 
+    private GameObject currentTarget = null;
+
     //표시용 리스트
 
     public int DataCount = 0;
@@ -34,11 +41,15 @@ public class UIManager : MonoBehaviour
 
     private float gamePlayTime = 0;
 
+    private bool skillCallDown = false; 
+    private float skillTime = 0;
+    private float skillSetTime = 0f;
+
 
 
     void Start()
     {
-
+        StatCards.SetActive(true);
     }
 
     // Update is called once per frame
@@ -48,6 +59,19 @@ public class UIManager : MonoBehaviour
 
         // F1 -> 소수점 한자리까지 표시
         timeText.text = gamePlayTime.ToString("F1");
+
+        if(skillCallDown)
+        {
+            skillTime += Time.deltaTime;
+            SkillImg.fillAmount = (skillSetTime / skillTime);
+            if (skillTime >= skillSetTime)
+            {
+                skillCallDown = false;
+                player = GameObject.Find("Player");
+                player.GetComponent<PlayerMove>().SkillSetOn();
+                skillTime = skillSetTime = 0;
+            }
+        }
 
     }
 
@@ -80,12 +104,7 @@ public class UIManager : MonoBehaviour
             while (usedIndices.Contains(randNum));
 
             usedIndices.Add(randNum); // 중복 방지용 저장
-            //StatCardData stat = Instance.RanStatCardDate(randNum);
             PlayerSkillData skillCard = Instance.RanSkillCardData(randNum);
-
-            //statUiAll[count].GetComponent<StatCardUI>().SetingStatUi(stat);
-            //statUiAll[count].SetActive(true);
-
             statUiAll[count].GetComponent<StatCardUI>().SetingSkillCardUi(skillCard);
             statUiAll[count].SetActive(true);
         }
@@ -128,18 +147,48 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void GKeyActive(bool active, GameObject gameObj , ItemData itemData)
+    public void GKeyActive(bool active, GameObject gameObj , ItemData itemData , bool SItem)
     {
-        GKeyUi.SetActive(active);
-        itemDescription.SetActive(active);
-        itemDescription.GetComponent<ItemDescription>().SettingDescription(itemData);
-        if (Input.GetKeyDown(KeyCode.G) && active)
-        {       
-            gameObj.SetActive(false);
-            GKeyUi.SetActive(false);        
-            itemDescription.SetActive(false);
-            Instance.AddItem(itemData);
 
+        if (active)
+        {
+            
+            if (currentTarget != gameObj)
+            {
+                currentTarget = gameObj;
+                itemDescription.GetComponent<ItemDescription>().SettingDescription(itemData, SItem);
+            }
+
+            GKeyUi.SetActive(true);
+            itemDescription.SetActive(true);
+
+            
+            if (Input.GetKeyDown(KeyCode.G) && currentTarget == gameObj)
+            {
+                
+                if (Instance.BuyItem(itemData.ItemPrice))
+                {
+                    gameObj.SetActive(false);
+                    GKeyUi.SetActive(false);
+                    itemDescription.SetActive(false);
+                    currentTarget = null;
+
+                    Instance.AddItem(itemData);
+                }
+                else 
+                    return;
+
+            }
+        }
+        else
+        {
+
+            if (currentTarget == gameObj)
+            {
+                GKeyUi.SetActive(false);
+                itemDescription.SetActive(false);
+                currentTarget = null;
+            }
         }
 
     }
@@ -151,5 +200,18 @@ public class UIManager : MonoBehaviour
         if(!stop)
             Time.timeScale = 1;
     }
+
+    public void SetSkillImg(Sprite Img)
+    {
+        SkillImg.sprite = Img;
+    }
+
+    public void CallDonwSkill(float setTime)
+    {
+        skillCallDown = true;
+        skillSetTime = setTime;
+    }
+
+
 
 }

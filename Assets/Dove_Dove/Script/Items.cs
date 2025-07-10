@@ -22,8 +22,6 @@ public class Items : MonoBehaviour
 
     public int ex;
 
-    public AnimatorController[] allAnimator;
-
     Animator animator;
 
     Vector3 movePos;
@@ -96,17 +94,6 @@ public class Items : MonoBehaviour
         else if (rand <= 6)
         {
             item = ItemType.coin;
-
-        }
-
-        if(item == ItemType.Exp)
-        {
-            animator.runtimeAnimatorController = allAnimator[0];
-
-        }
-        if (item == ItemType.coin)
-        {
-            animator.runtimeAnimatorController = allAnimator[1];
 
         }
     }

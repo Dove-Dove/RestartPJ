@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,9 +16,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler
         Shoes = 1 << 3,
     }
     // Start is called before the first frame update
-    public GameObject itemDescription;
     public Image slotImg;
     private ItemData itemData;
+
+    public TextMeshProUGUI itemText;
 
     private Vector2 ViewUIPos = Vector2.zero;
 
@@ -64,9 +66,12 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler
             case EquipmentType.Shoes:
                 itemData = GameManager.Instance.SetPlayerShoes();
                 break;
+            default:
+                itemData = GameManager.Instance.NullItem();
+                break;
         }
 
-        slotImg.sprite = itemData.ItemImg;
+         slotImg.sprite = itemData.ItemImg;
 
     }
 
@@ -74,17 +79,16 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler
     {
         if(itemData.ItemName == "null")
             return;
-        itemDescription.SetActive(true);
-        itemDescription.GetComponent<ItemDescription>().SettingDescription(itemData);
-        itemDescription.GetComponent<ItemDescription>().SetPos(ViewUIPos);
+
+        itemText.text = itemData.ItemName;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (itemData.ItemName == "null")
             return;
-        itemDescription.GetComponent<ItemDescription>().BackPos();
-        itemDescription.SetActive(false);
+        itemText.text = " "; 
+
     }
 
 

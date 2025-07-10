@@ -103,7 +103,7 @@ public class StatCardUI : MonoBehaviour
         rect = GetComponent<RectTransform>();
         evnetMoveObj.GetComponent<SCUClickEventObj>().startMove(rect.anchoredPosition);
 
-        GameManager.Instance.AddState(statCard);
+        GameManager.Instance.SetPlayerSkill(skillCard);
 
         //´Ý±â
         GameObject ui;
@@ -129,5 +129,7 @@ public class StatCardUI : MonoBehaviour
         startDown = true;
     
     }
+
+
 
 }

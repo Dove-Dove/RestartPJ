@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Thunder
   m_EditorClassIdentifier: 
   playerSkill: 4
-  statCardImg: {fileID: 0}
+  statCardImg: {fileID: 21300000, guid: 2d089513ae4adfc48a683c362ad9992c, type: 3}
   statName: Thunder
-  statText: 
+  statText: Thunder wo

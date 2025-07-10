@@ -14,7 +14,6 @@ public class SaleItems : MonoBehaviour
     ItemData itemData;
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +24,7 @@ public class SaleItems : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
         bool playerDetected = false;
 
@@ -38,7 +38,7 @@ public class SaleItems : MonoBehaviour
             }
         }
 
-        ui.GetComponent<UIManager>().GKeyActive(playerDetected, gameObject, itemData);
+        ui.GetComponent<UIManager>().GKeyActive(playerDetected, gameObject, itemData, true);
     }
 
     // 디버그용: 감지 범위 시각화
