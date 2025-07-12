@@ -19,7 +19,7 @@ MonoBehaviour:
   itemType: 2
   itemCondition: 1
   effects:
-  - effectType: 8
+  - effectType: 2
     value: 2
   - effectType: 16
     value: 2

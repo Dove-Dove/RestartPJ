@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
-using UnityEditor.Experimental.GraphView;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.Playables;
-using static ItemData;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -19,35 +19,38 @@ public class PlayerMove : MonoBehaviour
         dead
     }
     [Header("==PlayerSetting")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 8f;
-    public float maxHp = 100;
+    private float maxHp;
+    private float maxMp;
+    private float moveSpeed;
+    private float jumpForce;
     public int money = 0;
+
+    public PlayerData playerData;
 
     private PlayerState playerState = PlayerState.idle;
     
     private float nowHp;
+    private float nowMp;
 
     private bool jumping = false;
-    public GameObject ui;
+    private GameObject ui;
 
     [Header("==PlayerAttack")]
     //--공격관련---
     private bool attacking = false;
     private int attackNum = 1;
-    [SerializeField]
-    private float attackDeley = 0.4f;
-    [SerializeField]
+    private float attackDeley ;
     private float delayTime = 0f;
-    [SerializeField]
     private float attackSpeed = 1f;
     private bool delayStart = false;
 
     [Header("==PlayerSkill")]
     //플레이어 스킬
     public GameObject PlayerSkillBox;
-    public PlayerSkillData skill;
+    private PlayerSkillData skill;
     private bool skillOn = false;
+
+    private List<GameObject> ThinderHitList = new List<GameObject>();
 
     public GameObject TestSkill;
 
@@ -64,10 +67,8 @@ public class PlayerMove : MonoBehaviour
 
 
     //-- 구르기 
-    [SerializeField] 
-    float rollSpeed = 5f;
-    [SerializeField] 
-    float rollDuration = 0.5f;
+    private float rollSpeed = 5f;
+    private float rollDuration = 0.5f;
 
     //구르기 속도
     private float rollAimeSpeed = 1f;
@@ -93,13 +94,7 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        animator= GetComponent<Animator>();
-        nowHp = maxHp;
-        sr = GetComponent<SpriteRenderer>();
-
-        attackCollider.GetComponent<BoxCollider2D>().enabled = false;
-        
+        startSetting(); 
     }
 
     void Update()
@@ -151,6 +146,48 @@ public class PlayerMove : MonoBehaviour
 
     }
 
+    private void startSetting()
+    {
+        maxHp = playerData.PlayerMaxHp;       
+        maxMp = playerData.PlayerMaxMp;
+
+        moveSpeed = playerData.MoveSpeed;
+        jumpForce = playerData.JumpForce;
+
+        nowHp = maxHp;
+        nowMp = maxMp;
+
+        attackCollider.GetComponent<PlayerAttack>().SetDamages(playerData.AttackDemage);
+        attackDeley = playerData.AttackDeley;
+        attackSpeed = playerData.AttackSpeed;
+
+
+        skill = playerData.Skill;
+
+        rollSpeed = playerData.RollSpeed;
+        rollDuration = playerData.RollDuration;
+
+        InstanceSettingStat();
+
+        ui = GameObject.Find("UI_Canvas");
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
+        attackCollider.GetComponent<BoxCollider2D>().enabled = false;
+    }
+
+    public void InstanceSettingStat()
+    {
+        GameManager.Instance.Stats.playerMaxHp = maxHp;
+        GameManager.Instance.Stats.playerMaxMp = maxMp;
+        GameManager.Instance.Stats.playerMoveSpeed = moveSpeed;
+        GameManager.Instance.Stats.attackSpeed = attackSpeed;
+        GameManager.Instance.Stats.attackDeley = attackDeley;
+        GameManager.Instance.Stats.rollSpeed = rollSpeed;
+        GameManager.Instance.Stats.rollDuration = rollDuration;
+
+    }
+
 
     private void Attack()
     {
@@ -178,32 +215,42 @@ public class PlayerMove : MonoBehaviour
     {
         if (delayStart || skillOn)
             return;
-        skillOn = true;
-        if (TestSkill == null)
-        {
-            Debug.LogWarning("TestSkill 프리팹이 할당되지 않았습니다.");
-            return;
-        }
- 
 
-
-
-
+  
         if (skill.PlayerSkill == PlayerSkill.Cuting && !skillOn)
         {
             animator.SetTrigger("Skill");
             animator.speed = 0.65f;
+            skillOn = true;
         }
 
-        else if (skill.PlayerSkill == PlayerSkill.Thunder)
-        {
+    }
 
+    private void spawnSkill()
+    {
+        if (skill.PlayerSkill == PlayerSkill.Thunder)
+        {
+            TRay();
+            for (int i = 0 ; i < ThinderHitList.Count; i++)
+            {
+                Vector2 spawnPoint = ThinderHitList[i].transform.position;
+                spawnPoint.y += 0.67f;
+                GameObject clone = Instantiate(TestSkill, spawnPoint, transform.rotation);
+                SpawnSkill spawn = clone.GetComponent<SpawnSkill>();
+                if (spawn != null)
+                {
+                    spawn.StartSkill(skill);
+                }
+            }
+            ThinderHitList.Clear();
+            playerState = PlayerState.idle;
+            animator.SetBool("Move", false);
         }
         else if (skill.PlayerSkill == PlayerSkill.HolyCross)
         {
 
             Vector2 playerPos = transform.position;
-            playerPos.y += 1.93f;
+            playerPos.y -= 1.93f;
 
             GameObject clone = Instantiate(TestSkill, playerPos, transform.rotation);
             SpawnSkill spawn = clone.GetComponent<SpawnSkill>();
@@ -212,9 +259,50 @@ public class PlayerMove : MonoBehaviour
                 spawn.StartSkill(skill);
             }
             ui.GetComponent<UIManager>().CallDonwSkill(4.0f);
+            playerState = PlayerState.idle;
+            animator.SetBool("Move", false);
+        }
+    }
+
+    private void TRay()
+    {
+        //if (ThinderHitList.Count >= 5)
+        //    return;
+
+        //RaycastHit2D[] hit1 = Physics2D.Raycast(transform.position, new Vector2(-1, 0), 7, 10);
+        //RaycastHit2D[] hit2 = Physics2D.Raycast(transform.position, new Vector2(1, 0), 7, 10);
+
+        //Debug.DrawRay(transform.position, Vector3.left * 4, Color.red);
+        //Debug.DrawRay(transform.position, Vector3.right * 4, Color.blue);
+
+        //if (hit1.collider != null && hit1.collider.CompareTag("Monster"))
+        //{
+        //    ThinderHitList.Add(hit1.collider.gameObject);
+        //}
+
+        //else if (hit2.collider != null && hit2.collider.CompareTag("Monster"))
+        //{
+        //    ThinderHitList.Add(hit2.collider.gameObject);
+        //}
+        int monsterLayer = LayerMask.GetMask("Monster");
+
+        RaycastHit2D hit1 = Physics2D.Raycast(transform.position, Vector2.left, 4f, monsterLayer);
+        RaycastHit2D hit2 = Physics2D.Raycast(transform.position, Vector2.right, 4f, monsterLayer);
+
+        Debug.DrawRay(transform.position, Vector2.left * 4f, Color.red);
+        Debug.DrawRay(transform.position, Vector2.right * 4f, Color.red);
+
+        if (hit1.collider != null && hit1.collider.CompareTag("Monster"))
+        {
+            Debug.Log("몬스터 감지 - 왼쪽: " + hit1.collider.name);
+            ThinderHitList.Add(hit1.collider.gameObject);
         }
 
-
+        if (hit2.collider != null && hit2.collider.CompareTag("Monster"))
+        {
+            Debug.Log("몬스터 감지 - 오른쪽: " + hit2.collider.name);
+            ThinderHitList.Add(hit2.collider.gameObject);
+        }
     }
 
     //----------Controller--------------
@@ -245,8 +333,15 @@ public class PlayerMove : MonoBehaviour
         else if(Input.GetKeyDown(KeyCode.Q) && !attacking &&
             playerState != PlayerState.jump && !jumping && !rolling)
         {
-            playerState = PlayerState.skill;
-            SkillAttack();
+            if(skill.PlayerSkill == PlayerSkill.Cuting)
+            {
+                playerState = PlayerState.skill;
+            }
+            else if(skill.PlayerSkill != PlayerSkill.None)
+            {
+                spawnSkill();
+            }
+
         }
 
     }
@@ -340,9 +435,6 @@ public class PlayerMove : MonoBehaviour
     }
   
 
-
-    //--------애니메이션 특정한 부분에서 작동------------
-
     public void Hit(float Damages)
     {
         if(!hitCheck && playerState != PlayerState.roll)
@@ -360,6 +452,18 @@ public class PlayerMove : MonoBehaviour
         
     }
 
+    private bool UsingMp(float useMp)
+    {
+        if( (nowMp-useMp) > 0)
+        {
+            nowMp -= useMp;
+
+            return true;
+        }
+        return false;
+
+    }
+
     public void Healing(float heal)
     {
         nowHp += heal;
@@ -368,7 +472,7 @@ public class PlayerMove : MonoBehaviour
         GameManager.Instance.GetHp(nowHp);
     }
 
-
+    //--------애니메이션 특정한 부분에서 작동------------
     public void AttackEnd()
     {
         attacking = false;
@@ -397,7 +501,6 @@ public class PlayerMove : MonoBehaviour
     //이쪽 스킬은 플레이어쪽에 붙어있는 스킬임
     public void SkillStart()
     {
-        Debug.Log("SkillStart 호출됨");
         PlayerSkillBox.SetActive(true);
         Vector2 offset = sr.flipX ? skillRight : skillLeft; //일부러 반대로 넣었음 
         PlayerSkillBox.transform.localPosition = offset;
@@ -407,7 +510,7 @@ public class PlayerMove : MonoBehaviour
     {
         playerState = PlayerState.idle;
         animator.speed = 1f;
-
+        animator.SetBool("Move", false);
 
     }
 
@@ -435,15 +538,16 @@ public class PlayerMove : MonoBehaviour
         hitCheck = false;
         isInvincible = false;
     }
-
-    public float PlayerGetMaxHp()
-    {
-        return maxHp;
-    }
+    //---------------
 
     public float PlayerGetHp()
     {
         return nowHp;
+    }
+
+    public float PlayerGetMp()
+    {
+        return nowMp;
     }
 
     public void getMoney(int getMoeny)
@@ -478,11 +582,14 @@ public class PlayerMove : MonoBehaviour
                 case ItemEffect.AttackSpeed:
                     attackSpeed+= itemEffect.value;
                     break;
+                case ItemEffect.AttackDamage:
+                    attackCollider.GetComponent<PlayerAttack>().SetDamages(itemEffect.value);
+                    break;
                 case ItemEffect.ConditionPower:
-                    attackCollider.GetComponent<PlayerAttack>().setDamages(itemEffect.value);
+                    attackCollider.GetComponent<PlayerAttack>().setCDamages(itemEffect.value);
                     break;
                 case ItemEffect.ConditionTime:
-                    attackCollider.GetComponent<PlayerAttack>().SetTime(itemEffect.value);
+                    attackCollider.GetComponent<PlayerAttack>().SetCTime(itemEffect.value);
                     break;
                 case ItemEffect.RollingSpeed:
                     attackSpeed += itemEffect.value;
@@ -492,6 +599,7 @@ public class PlayerMove : MonoBehaviour
                     break;
             }
         }
+        InstanceSettingStat();
     }
 
     public void RemoveItem(ItemData data)
@@ -507,24 +615,29 @@ public class PlayerMove : MonoBehaviour
                 case ItemEffect.AttackSpeed:
                     attackSpeed -= itemEffect.value;
                     break;
+                case ItemEffect.AttackDamage:
+                    attackCollider.GetComponent<PlayerAttack>().SetDamages(-itemEffect.value);
+                    break;
                 case ItemEffect.ConditionPower:
-                    attackCollider.GetComponent<PlayerAttack>().RemoveDamages(itemEffect.value);
+                    attackCollider.GetComponent<PlayerAttack>().setCDamages(-itemEffect.value);
                     break;
                 case ItemEffect.ConditionTime:
-                    attackCollider.GetComponent<PlayerAttack>().RemoveTime(itemEffect.value);
+                    attackCollider.GetComponent<PlayerAttack>().SetCTime(-itemEffect.value);
                     break;
                 case ItemEffect.RollingSpeed:
-                    attackSpeed += itemEffect.value;
+                    attackSpeed -= itemEffect.value;
                     break;
                 case ItemEffect.RollDuration:
-                    rollDuration += itemEffect.value;
+                    rollDuration -= itemEffect.value;
                     break;
             }
         }
+        InstanceSettingStat();
     }
 
     public void setPlayerSkill(PlayerSkillData SetSkill)
     {
         skill = SetSkill;
     }
+
 }

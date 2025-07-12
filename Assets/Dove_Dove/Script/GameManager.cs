@@ -4,7 +4,23 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
-
+[System.Serializable]
+public class PlayerStats
+{
+    public float playerMaxHp;
+    public float playerNowHp;
+    public float playerMaxMp;
+    public float playerNowMp;
+    public float playerMoveSpeed;
+    public float attackDemage;
+    public float attackSpeed;
+    public float attackDeley;
+    public string cType;
+    public float cPower;
+    public float cTime;
+    public float rollSpeed;
+    public float rollDuration;
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -16,11 +32,26 @@ public class GameManager : MonoBehaviour
     private GameObject Player;
     private int playerLevel;
     private int PlayerEx;
-    private float playerMaxHp;
+
+    public PlayerStats Stats { get; private set; } = new PlayerStats();
+
+    //----------------
+    //private float playerMaxHp;
+    //private float attackSpeed;
+    //private float attackTime;
+    //private float cPower;
+    //private float cTime;
+    //private float rollSpeed;
+    //private float rollDuration;
+
+    //-------------------
+
     private float playerNowHp;
+    private float playerNowMp;
     private int playerMoney;
 
     private PlayerSkillData playerSkill_GameManger;
+
     //public List<UserItem> userGetItemData = new List<UserItem>(3);
 
     public ItemData playerWeapon;
@@ -87,9 +118,10 @@ public class GameManager : MonoBehaviour
     {
         FindObj();
 
-        playerMaxHp = Player.GetComponent<PlayerMove>().PlayerGetMaxHp();
         playerNowHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
+        playerNowMp = Player.GetComponent<PlayerMove>().PlayerGetMp();
         GetHp(playerNowHp);
+        GetMp(playerNowMp);
     }
 
     // Update is called once per frame
@@ -182,18 +214,24 @@ public class GameManager : MonoBehaviour
             ui.GetComponent<UIManager>().openStateCard();
            
         }
-        ui.GetComponent<UIManager>().UIGetMp(PlayerEx);
+        
     }
 
     public void GetHp(float hp)
     {
         playerNowHp = hp;
-
+        Stats.playerNowHp = playerNowHp;
 
         ui.GetComponent<UIManager>().setPlayerHit(playerNowHp);
     }
 
+    public void GetMp(float mp)
+    {
+        playerNowMp = mp;
+        Stats.playerNowMp = playerNowMp;
 
+        ui.GetComponent<UIManager>().UIGetMp(playerNowHp);
+    }
 
     public ItemData RanItemData()
     {
@@ -235,33 +273,20 @@ public class GameManager : MonoBehaviour
     public void SetPlayerSkill(PlayerSkillData setData)
     {
         playerSkill_GameManger = setData;
+
         Player.GetComponent<PlayerMove>().setPlayerSkill(playerSkill_GameManger);
         ui.GetComponent<UIManager>().SetSkillImg(playerSkill_GameManger.StatCardImg);
+    }
+
+    public PlayerSkillData SetSkillData()
+    {
+        return playerSkill_GameManger;
     }
 
 
 
     public void AddItem(ItemData getItem)
     {
-        //UserItem found = null;
-
-        ////아이템이 있는지 확인 
-        //foreach (UserItem item in userGetItemData)
-        //{
-        //    if (item.itemData.ItemType == getItem.ItemType)
-        //    {
-        //        found = item;
-        //        break;
-        //    }
-        //}
-
-        ////if (found != null) 
-        ////    found.count++;
-        //if(found == null)
-        //{
-        //    //userGetItemData.Add(new UserItem { itemData = getItem, count = 1 });
-        //    Player.GetComponent<PlayerMove>().SettingItem(getItem);
-        //}
 
         switch(getItem.ItemType)
         {

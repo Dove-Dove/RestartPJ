@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3430fe72ff3994f9954bd1463654ea, type: 3}
+  m_Name: Player Data
+  m_EditorClassIdentifier: 
+  playerMaxHp: 100
+  playerMaxMp: 100
+  moveSpeed: 5
+  jumpForce: 8
+  attackDemage: 20
+  attackDeley: 0.4
+  attackSpeed: 1
+  rollSpeed: 5
+  rollDuration: 0.5
+  skill: {fileID: 11400000, guid: 8dbe7b68f88645848a9aae74643370dd, type: 2}
+  playerWeapon: {fileID: 11400000, guid: 2d35028104c39cc4f80e518eb51c7b02, type: 2}
+  playerArmor: {fileID: 11400000, guid: 2d35028104c39cc4f80e518eb51c7b02, type: 2}
+  playerShoes: {fileID: 11400000, guid: 2d35028104c39cc4f80e518eb51c7b02, type: 2}

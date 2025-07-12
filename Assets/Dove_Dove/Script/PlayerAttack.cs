@@ -6,43 +6,55 @@ public class PlayerAttack : MonoBehaviour
 {
 
     public Condition condition = Condition.None;
+    private float attackDemage =0.0f;
     private float conditionTime = 0.0f;
     private float conditionDamages = 0.0f;
+    private string types = " ";
 
     public void playerAttackType(Condition getType)
     {
-        switch(getType)
+        switch (getType)
         {
             case Condition.None:
                 condition = Condition.None;
                 break;
             case Condition.poison:
                 condition = Condition.poison;
+                types = "poison";
                 break;
             case Condition.brun:
                 condition = Condition.brun;
+                types = "brun";
                 break;
         }
     }
 
-    public void setDamages(float damage )
+    public void SetDamages(float damage)
+    {
+        attackDemage += damage;
+        SetingWarponStat();
+    }
+
+    public void setCDamages(float damage)
     {
         conditionDamages += damage;
+        SetingWarponStat();
     }
 
-    public void SetTime(float time)
+    public void SetCTime(float time)
     {
         conditionTime += time;
+        SetingWarponStat();
     }
 
-    public void RemoveDamages(float damage)
-    {
-        conditionDamages -= damage;
-    }
 
-    public void RemoveTime(float time)
+
+    private void SetingWarponStat()
     {
-        conditionTime -= time;
+        GameManager.Instance.Stats.attackDemage = attackDemage;
+        GameManager.Instance.Stats.cPower = conditionDamages;
+        GameManager.Instance.Stats.cTime = conditionTime;
+        GameManager.Instance.Stats.cType = types;
     }
 
 
@@ -50,7 +62,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (other.CompareTag("Monster"))
         {
-            other.GetComponent<MonsterController>().Hit(10.0f);
+            other.GetComponent<MonsterController>().Hit(attackDemage);
             other.GetComponent<VariousType>().HitType(condition, conditionTime , conditionDamages);
             print(other.name);
         }

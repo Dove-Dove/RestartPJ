@@ -6,10 +6,14 @@ public class UserStopStateUI : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[] PlayerItemSlot;
 
-    public Text SkillName;
-    public Text SkillText;
+    public GameObject SkillPenal;
 
-    
+    public GameObject StatPenal;
+
+    [SerializeField]
+    private Slider HP_Slider;
+    [SerializeField]
+    private Slider MP_Slider;
 
     public void SetItem()
     {
@@ -18,7 +22,11 @@ public class UserStopStateUI : MonoBehaviour
             PlayerItemSlot[i].GetComponent<ItemSlot>().SetItem();
         }
 
+        SkillPenal.GetComponent<SkillStopPenal>().StopSkillPenal();
+        StatPenal.GetComponent<StatStopPanel>().SettingText();
 
+        HP_Slider.value = GameManager.Instance.Stats.playerNowHp /100;
+        MP_Slider.value = GameManager.Instance.Stats.playerNowMp / 100;
     }
 
 }

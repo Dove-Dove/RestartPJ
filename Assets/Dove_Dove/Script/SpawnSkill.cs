@@ -13,8 +13,7 @@
 
         void Start()
         {
-        animator = GetComponent<Animator>();
-
+            animator = GetComponent<Animator>();
         }
         void Update()
         {
@@ -28,14 +27,24 @@
                 animator = GetComponent<Animator>();
             skillData = setData;
             skillOn = true;
-            animator.GetComponent<Animator>().SetTrigger("HolyStart");
-        
-            StartCoroutine(SkillContinuing());
+
+            switch(skillData.PlayerSkill)
+            {
+            case PlayerSkill.Thunder:
+                animator.SetTrigger("ThunderStart");
+                gameObject.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+                gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.5f , 1.5f);
+                break;
+            case PlayerSkill.HolyCross:
+                animator.SetTrigger("HolyStart");
+                StartCoroutine(SkillContinuing());
+                break;
+            }      
         }
 
         public void SkillEnd()
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
         private void OnTriggerStay2D(Collider2D other)
@@ -53,7 +62,7 @@
             {
                 if (other.CompareTag("Enemy"))
                 {
-                    other.GetComponent<PlayerMove>().Hit(10.0f);
+                    other.GetComponent<MonsterController>().Hit(10.0f);
                 }
             }
         }

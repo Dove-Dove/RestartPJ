@@ -195,14 +195,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0434c2ca262457a4a894b2f0c0edf398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  jumpForce: 8
-  maxHp: 100
+  money: 0
+  playerData: {fileID: 11400000, guid: 3a6a6360f9f2c364f846c17da822edd8, type: 2}
+  ui: {fileID: 0}
   attackDeley: 0
   delayTime: 0
   attackSpeed: 1
-  rollSpeed: 5
-  rollDuration: 1
+  PlayerSkillBox: {fileID: 0}
+  skill: {fileID: 0}
+  TestSkill: {fileID: 0}
   hitAnimeEndTime: 1
   groundCheck: {fileID: 3238529192554650141}
   boxSize: {x: 0.85, y: 0.1}

@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static ItemData;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler                                                         
 {
