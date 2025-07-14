@@ -58,7 +58,7 @@ public class ItemData : ScriptableObject
     {
         public ItemEffect effectType; // 
         public float value;           //
-    
+   
 
     }
 

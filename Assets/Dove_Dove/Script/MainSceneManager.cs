@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public class MainSceneManager : MonoBehaviour
 {
@@ -16,6 +13,7 @@ public class MainSceneManager : MonoBehaviour
     public Button ShopButton;
 
     public Button OptionButton;
+    public GameObject Option;
 
     public Button EndButton;
 
@@ -23,6 +21,8 @@ public class MainSceneManager : MonoBehaviour
     List<Resolution> resolutions = new List<Resolution>();
     int resolutionNum;
 
+    //---
+    private bool optionOpen = false;
 
     void Start()
     {
@@ -33,7 +33,7 @@ public class MainSceneManager : MonoBehaviour
         ShopButton.onClick.AddListener(test);
 
         //샵 버튼
-        OptionButton.onClick.AddListener(test);
+        OptionButton.onClick.AddListener(OpenOption);
 
         //종료 버튼
         EndButton.onClick.AddListener(test);
@@ -49,6 +49,15 @@ public class MainSceneManager : MonoBehaviour
     void test()
     {
         Debug.Log("테스트 ");
+    }
+
+    void OpenOption()
+    {
+        if(!optionOpen)
+            Option.gameObject.SetActive(true);
+        else
+            Option.gameObject.SetActive(false);
+        optionOpen = !optionOpen;
     }
 
     void DropDownShow()

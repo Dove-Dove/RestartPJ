@@ -15,11 +15,6 @@
         {
             animator = GetComponent<Animator>();
         }
-        void Update()
-        {
-
-        }
-
 
         public void StartSkill(PlayerSkillData setData)
         {
@@ -34,12 +29,18 @@
                 animator.SetTrigger("ThunderStart");
                 gameObject.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
                 gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1.5f , 1.5f);
+                gameObject.GetComponent<BoxCollider2D>().enabled = false;
                 break;
             case PlayerSkill.HolyCross:
                 animator.SetTrigger("HolyStart");
                 StartCoroutine(SkillContinuing());
                 break;
             }      
+        }
+
+        public void SkillHitPoint()
+        {
+            gameObject.GetComponent<BoxCollider2D>().enabled = true;
         }
 
         public void SkillEnd()
@@ -60,7 +61,7 @@
 
             else if (skillData.PlayerSkill == PlayerSkill.Thunder)
             {
-                if (other.CompareTag("Enemy"))
+                if (other.CompareTag("Monster"))
                 {
                     other.GetComponent<MonsterController>().Hit(10.0f);
                 }

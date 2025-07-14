@@ -250,7 +250,7 @@ public class PlayerMove : MonoBehaviour
         {
 
             Vector2 playerPos = transform.position;
-            playerPos.y -= 1.93f;
+            playerPos.y += 1.93f;
 
             GameObject clone = Instantiate(TestSkill, playerPos, transform.rotation);
             SpawnSkill spawn = clone.GetComponent<SpawnSkill>();
