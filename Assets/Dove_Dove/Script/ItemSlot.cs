@@ -39,13 +39,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler
         ViewUIPos.y = -85;
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void StartSetting()
     {
         itemData = GameManager.Instance.NullItem();

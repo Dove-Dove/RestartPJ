@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class MonsterController : MonoBehaviour
 {
@@ -36,8 +33,6 @@ public class MonsterController : MonoBehaviour
 
     private float theTime =0;
     public float deadTime = 2.0f;
-
-    private float distance;
 
     public float attackDistance;
     public float attackDamages;
@@ -121,6 +116,7 @@ public class MonsterController : MonoBehaviour
     }
     void Move()
     {
+        //의도한건 아닌대 뭔가 마음에 들게 움직여서 일단 멈춤
         if(state == monsterState.attack || state == monsterState.hit || state == monsterState.dead)
             return;
 

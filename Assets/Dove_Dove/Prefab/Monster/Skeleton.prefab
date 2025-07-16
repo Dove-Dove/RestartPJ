@@ -201,10 +201,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 20
   moveSpeed: 2
-  turnTime: 3
+  searchTime: 1.5
+  turnTime: 1.2
+  deadTime: 2
   attackDistance: 2
   attackDamages: 0
-  deadTime: 2
   scanRange: 5
   enemyLayer:
     serializedVersion: 2
@@ -225,9 +226,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3d6c6dea7038374d8ea71476f4ed2f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  condition: 0
-  typeDuration: 10
-  Damages: 10
 --- !u!114 &1304000934122447798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,7 +244,6 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
-  searchRay: {fileID: 0}
 --- !u!1 &2109842622020441582
 GameObject:
   m_ObjectHideFlags: 0

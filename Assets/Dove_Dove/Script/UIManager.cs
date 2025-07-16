@@ -31,8 +31,10 @@ public class UIManager : MonoBehaviour
     public GameObject itemDescription;
 
     public GameObject userItemInven;
-
     private GameObject currentTarget = null;
+
+    public GameObject PlayerDeadUi;
+
 
     //표시용 리스트
 
@@ -212,6 +214,10 @@ public class UIManager : MonoBehaviour
         skillSetTime = setTime;
     }
 
+    public void PlayerDead()
+    {
+        PlayerDeadUi.SetActive(true);
+    }
 
 
 }

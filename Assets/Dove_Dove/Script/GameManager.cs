@@ -1,8 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PlayerStats
@@ -69,14 +69,16 @@ public class GameManager : MonoBehaviour
     private GameObject ui;
 
 
+
     //기타 세팅
     bool GameStopKeyDown = false;
+    bool startMap = false;
 
     //데이터 등록
     public PlayerSkillData[] skillDatas;
     public StatCardData[] statCardDatas;
 
-    public ItemData[] itemData;
+    public List<ItemData> itemData = new List<ItemData>();
 
 
     //스텟 카드 
@@ -110,24 +112,24 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject); // 중복된 GameManager가 있으면 삭제
         }
 
-        Player = GameObject.Find("Player");
-        Cam = GameObject.Find("Main Camera");
+
     }
 
-    void Start()
-    {
-        FindObj();
-
-        playerNowHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
-        playerNowMp = Player.GetComponent<PlayerMove>().PlayerGetMp();
-        GetHp(playerNowHp);
-        GetMp(playerNowMp);
-    }
 
     // Update is called once per frame
     void Update()
     {
-        //FindObj();
+        if (SceneManager.GetActiveScene().name == "MainScene")
+        {
+            return;
+        }
+        else if(!startMap)
+        {
+            FindObj();
+            startMap = true;
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -165,6 +167,10 @@ public class GameManager : MonoBehaviour
 
     private void FindObj()
     {
+
+        Player = GameObject.Find("Player");
+        Cam = GameObject.Find("Main Camera");
+
         if (Player == null)
         {
             Player = GameObject.Find("Player"); // 씬 로드 시 다시 Player 찾기
@@ -201,6 +207,12 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
+        FileFindAddData();
+        playerNowHp = Player.GetComponent<PlayerMove>().PlayerGetHp();
+        playerNowMp = Player.GetComponent<PlayerMove>().PlayerGetMp();
+        GetHp(playerNowHp);
+        GetMp(playerNowMp);
+
     }
 
     //원래는 스킬로 할려고 했는대 이미 어느정도 한게 있어서 현상 유지
@@ -236,7 +248,7 @@ public class GameManager : MonoBehaviour
     public ItemData RanItemData()
     {
         ItemData data;
-        int randomNum = Random.Range(1, itemData.Length);
+        int randomNum = UnityEngine.Random.Range(1, itemData.Count);
         data = itemData[randomNum];
 
         return data;
@@ -354,5 +366,26 @@ public class GameManager : MonoBehaviour
     {
         return userStateData;
     }
+    public void GetItemData(ItemData getData)
+    {
+        itemData.Add(getData);
+    }
 
+    public void FileFindAddData()
+    {
+
+        string FileLocation = "Assets/Datas/ItemData";
+        string[] Files= AssetDatabase.FindAssets("t:ItemData", new[] { FileLocation });
+
+        //DirectoryInfo files = new DirectoryInfo(Path.Combine(Application.streamingAssetsPath, ""));
+
+        foreach (string addFile in Files)
+        {
+            string pushFile = AssetDatabase.GUIDToAssetPath(addFile);
+            ItemData pushData = AssetDatabase.LoadAssetAtPath<ItemData>(pushFile);
+
+            if(pushData != null && pushData.ItemName != "null")
+                GetItemData(pushData);
+        }
+    }
 }

@@ -6,7 +6,6 @@ public class VariousType : MonoBehaviour
 {
     private Condition condition = Condition.None;
 
-    private float typeDuration = 10f;
     private float Damages =0f;
     private float typeAttackTime = 0.1f;
 

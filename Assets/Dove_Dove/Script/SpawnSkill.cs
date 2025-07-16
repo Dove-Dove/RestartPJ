@@ -1,13 +1,8 @@
     using System.Collections;
-    using System.Collections.Generic;
-    using Unity.VisualScripting;
     using UnityEngine;
 
     public class SpawnSkill : MonoBehaviour
     {
-
-        Vector2 SpawnPos;
-        bool skillOn = false;
         Animator animator;
         PlayerSkillData skillData;
 
@@ -21,7 +16,6 @@
             if (animator == null)
                 animator = GetComponent<Animator>();
             skillData = setData;
-            skillOn = true;
 
             switch(skillData.PlayerSkill)
             {

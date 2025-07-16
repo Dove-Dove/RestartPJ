@@ -15,11 +15,6 @@ public class CameraMove : MonoBehaviour
 
     public Vector2 center;
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
 
@@ -55,7 +50,7 @@ public class CameraMove : MonoBehaviour
         else
             vecY = targetPos.transform.position.y;
 
-        transform.position = new Vector3(vecX, vecY, -10);
+        transform.position = new Vector3(vecX, vecY + 3, -10);
 
 
 

@@ -17,14 +17,14 @@ public class GroundCheckRay : MonoBehaviour
     void Update()
     {
         RaycastHit2D hit1 = Physics2D.Raycast(rayObj[0].transform.position, new Vector3(0,-90,0)
-            , 1.0f, enemyLayer);
+            , 2f, enemyLayer);
         RaycastHit2D hit2 = Physics2D.Raycast(rayObj[1].transform.position, new Vector3(0, -90, 0)
-    , 1.0f, enemyLayer);
+    , 2f, enemyLayer);
 
 
 
-        Debug.DrawRay(rayObj[0].transform.position, new Vector3(0, -90, 0) * 0.5f, Color.red);
-        Debug.DrawRay(rayObj[1].transform.position, new Vector3(0, -90, 0) * 0.5f, Color.red);
+        Debug.DrawRay(rayObj[0].transform.position, new Vector3(0, -90, 0) * 1.5f, Color.red);
+        Debug.DrawRay(rayObj[1].transform.position, new Vector3(0, -90, 0) * 1.5f, Color.red);
 
         if (hit1.collider == null
             || hit2.collider == null)

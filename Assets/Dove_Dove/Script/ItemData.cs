@@ -17,12 +17,15 @@ public enum ItemEffect
 
 }
 
+//All = Weapon | Armor | Shoes 이렇게 쓴 이유 : 비트 플래그(enum Flags)
 public enum ItemTpyes
 {
     None = 0,
     Weapon = 1 << 1,
     Armor = 1 << 2,
     Shoes = 1 << 3,
+
+
 }
 
 [CreateAssetMenu(fileName = "Item Data", menuName = "Scriptable/Item Data", order = int.MaxValue)]
@@ -58,8 +61,7 @@ public class ItemData : ScriptableObject
     {
         public ItemEffect effectType; // 
         public float value;           //
-   
-
+  
     }
 
     [SerializeField]
