@@ -58,10 +58,11 @@ public class CreateItemUI : MonoBehaviour
     private List<ItemDatas> itemDs = new List<ItemDatas>();
     
     private bool itemImgDataOpen = false;
-    private Sprite StartImg;
 
     [Header("==OrderEventObj==")]
     public GameObject Stamp;
+    public GameObject StampImg;
+    public GameObject StampText;
     public Sprite Nullimg;
 
 
@@ -77,12 +78,13 @@ public class CreateItemUI : MonoBehaviour
     {
         itemImgChangeButton.onClick.AddListener(OpenItemDataObj);
         itemCreateButton.onClick.AddListener(CreateItem);
-        StartImg = itemImg.sprite;
         //OpneCreateItem();
     }
 
     public void OpneCreateItem()
     {
+        createEffectObj.Clear();
+
         CreateScrollObj();
         CraeteItemImgScrollObj();
         DropDownData();
@@ -93,7 +95,10 @@ public class CreateItemUI : MonoBehaviour
         nameInput.text = "";
         itmePrice.text = "";
         itmeText.text = "";
-        
+        StampImg.SetActive(false);
+        StampText.SetActive(true);
+
+
     }
 
     private void CreateScrollObj()
@@ -103,7 +108,7 @@ public class CreateItemUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        int itemECount = System.Enum.GetNames(typeof(ItemEffect)).Length;
+        int itemECount = Enum.GetNames(typeof(ItemEffect)).Length;
 
         ItemEffect[] values = (ItemEffect[])System.Enum.GetValues(typeof(ItemEffect));
         List<ItemEffect> validEffects = new List<ItemEffect>();
@@ -217,7 +222,6 @@ public class CreateItemUI : MonoBehaviour
 
 
         ItemData tempItem = CreateTempItem();
-        GameManager.Instance.GetItemData(tempItem);
         ItemSaveTool.SaveItemAsset(tempItem, createItemName);
         itemImgDataOpen = false;
         startSaveEvent();

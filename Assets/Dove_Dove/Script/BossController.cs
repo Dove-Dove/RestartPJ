@@ -246,12 +246,12 @@ public class BossController : MonoBehaviour
     public void SpellStart()
     {
         if (randomCast == 0)
-            StartCoroutine(CastingAttack2(1.5f, 0));
+            StartCoroutine(CastingAttack(1.5f, 0));
         //GameObject.Find("spellMapAttack").GetComponent<SpellMapAttack>().mapAttackStart();
         else
         {
             spellAttack = true;
-            StartCoroutine(CastingAttack2(1.5f , 1));
+            StartCoroutine(CastingAttack(1.5f , 1));
         }
 
     }
@@ -291,7 +291,7 @@ public class BossController : MonoBehaviour
 
 
     //--ÄÚ·çÆ¾
-    IEnumerator CastingAttack2(float delay,int spellType)
+    IEnumerator CastingAttack(float delay,int spellType)
     {
         
         float castingDelay = 0.3f;

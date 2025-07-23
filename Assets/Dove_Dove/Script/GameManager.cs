@@ -247,11 +247,9 @@ public class GameManager : MonoBehaviour
 
     public ItemData RanItemData()
     {
-        ItemData data;
-        int randomNum = UnityEngine.Random.Range(1, itemData.Count);
-        data = itemData[randomNum];
 
-        return data;
+        int randomNum = UnityEngine.Random.Range(1, itemData.Count);
+        return itemData[randomNum];
 
     }
 

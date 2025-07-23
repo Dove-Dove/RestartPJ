@@ -16,7 +16,7 @@ public class StartItem : MonoBehaviour
     void Start()
     {
         ui = GameObject.Find("UI_Canvas");
-        GetItemData();
+        StartCoroutine(DelayedInit());
     }
 
     // Update is called once per frame
@@ -50,5 +50,12 @@ public class StartItem : MonoBehaviour
         itemData = GameManager.Instance.RanItemData();
         GetComponent<SpriteRenderer>().sprite = itemData.ItemImg;
 
+    }
+
+    IEnumerator DelayedInit()
+    {
+        yield return null;
+       
+        GetItemData();   
     }
 }

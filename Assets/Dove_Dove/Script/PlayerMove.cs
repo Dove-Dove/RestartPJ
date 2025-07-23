@@ -1,10 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -214,7 +210,10 @@ public class PlayerMove : MonoBehaviour
     private void SkillAttack()
     {
         if (delayStart || skillOn)
+        {
+            playerState = PlayerState.idle;
             return;
+        }
 
   
         if (skill.PlayerSkill == PlayerSkill.Cuting && !skillOn)
@@ -510,6 +509,7 @@ public class PlayerMove : MonoBehaviour
     {
         playerState = PlayerState.idle;
         animator.speed = 1f;
+        ui.GetComponent<UIManager>().CallDonwSkill(4.0f);
         animator.SetBool("Move", false);
 
     }

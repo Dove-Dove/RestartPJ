@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,12 +22,6 @@ public class ItemDescription : MonoBehaviour
     {
         rect = GetComponent<RectTransform>();
         backPos = rect.position;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void SettingDescription(ItemData itemData , bool SaleItem)

@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Slider MP_Slider;
     public Image SkillImg;
+    public Image SkillCallDownObj;
 
     private GameObject player;
 
@@ -65,13 +66,14 @@ public class UIManager : MonoBehaviour
         if(skillCallDown)
         {
             skillTime += Time.deltaTime;
-            SkillImg.fillAmount = (skillSetTime / skillTime);
+            SkillCallDownObj.fillAmount = 1 - (skillTime / skillSetTime);
             if (skillTime >= skillSetTime)
             {
                 skillCallDown = false;
                 player = GameObject.Find("Player");
                 player.GetComponent<PlayerMove>().SkillSetOn();
-                skillTime = skillSetTime = 0;
+                skillTime = 0;
+                skillSetTime = 0;
             }
         }
 
@@ -212,6 +214,8 @@ public class UIManager : MonoBehaviour
     {
         skillCallDown = true;
         skillSetTime = setTime;
+        skillTime = 0;
+        SkillCallDownObj.fillAmount = 1;
     }
 
     public void PlayerDead()
